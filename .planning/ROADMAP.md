@@ -7,7 +7,7 @@ Build a cross-platform RSVP reader from scratch: scaffold the Electron app, impl
 ## Milestones
 
 - ✅ [v1.0 MVP](milestones/v1.0-ROADMAP.md) — Phases 1-4 (shipped 2026-01-18)
-- 🚧 **v1.1 Polish** — Phases 5-7 (in progress)
+- ✅ **v1.1 Polish** — Phases 5-7 (complete)
 
 ## Completed Milestones
 
@@ -24,7 +24,7 @@ Build a cross-platform RSVP reader from scratch: scaffold the Electron app, impl
 
 </details>
 
-### 🚧 v1.1 Polish (In Progress)
+### ✅ v1.1 Polish (Complete)
 
 **Milestone Goal:** Enhanced reading experience with intelligent timing, font options, and visual refinements.
 
@@ -56,15 +56,15 @@ Fonts supported:
 Plans:
 - [x] 06-01: Bundle Google Fonts locally, implement font cycling with persistence
 
-#### Phase 7: Visual Polish
+#### Phase 7: Visual Polish ✓
 
 **Goal**: Smoother transitions and ORP baseline alignment fix
 **Depends on**: Phase 6
-**Research**: Unlikely (CSS/JS refinements)
-**Plans**: TBD
+**Research**: None needed
+**Plans**: 1
 
 Plans:
-- [ ] 07-01: TBD
+- [x] 07-01: Smooth word transitions, ORP baseline alignment fix
 
 ## Progress
 
@@ -76,4 +76,4 @@ Plans:
 | 4. Controls & Polish | v1.0 | 2/2 | Complete | 2026-01-18 |
 | 5. Reading Timing | v1.1 | 1/1 | Complete | 2026-01-18 |
 | 6. Font System | v1.1 | 1/1 | Complete | 2026-01-18 |
-| 7. Visual Polish | v1.1 | 0/? | Not started | - |
+| 7. Visual Polish | v1.1 | 1/1 | Complete | 2026-01-18 |
