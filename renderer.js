@@ -146,12 +146,7 @@ function pause() {
 function jumpToIndex(index) {
   if (state.words.length === 0) return;
 
-  // Pause if currently playing
-  if (state.isPlaying) {
-    pause();
-  }
-
-  // Clamp index to valid range
+  // Clamp index to valid range - playback continues from new position if playing
   state.currentIndex = Math.max(0, Math.min(index, state.words.length - 1));
   displayWord(state.words[state.currentIndex]);
   updateProgress();
