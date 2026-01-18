@@ -31,7 +31,7 @@ function createBackdropWindow() {
     x: 0,
     y: 0,
     frame: false,
-    backgroundColor: '#000000',
+    transparent: true,
     skipTaskbar: true,
     focusable: false,
     alwaysOnTop: true,
@@ -43,12 +43,19 @@ function createBackdropWindow() {
     }
   });
 
+  // Load a simple translucent black page
+  backdropWindow.loadURL(`data:text/html,<html><body style="margin:0;background:rgba(0,0,0,0.85);"></body></html>`);
+
   // Use fullscreen for complete coverage
   backdropWindow.setFullScreen(true);
   backdropWindow.setAlwaysOnTop(true, 'normal');
 
-  // Show after setup
-  backdropWindow.show();
+  // Wait for window to be ready before showing (prevents white flash)
+  backdropWindow.once('ready-to-show', () => {
+    if (backdropWindow && !backdropWindow.isDestroyed()) {
+      backdropWindow.show();
+    }
+  });
 
   // Ensure main window stays above backdrop
   if (mainWindow) {
@@ -150,6 +157,27 @@ ipcMain.handle('toggle-focus-overlay', (event) => {
     createBackdropWindow();
     return true; // Overlay is now on
   }
+});
+
+// Show focus overlay (without toggle - for auto-show on content load)
+ipcMain.handle('show-focus-overlay', (event) => {
+  if (!backdropWindow || backdropWindow.isDestroyed()) {
+    createBackdropWindow();
+    return true;
+  }
+  return true; // Already on
+});
+
+// Hide focus overlay
+ipcMain.handle('hide-focus-overlay', (event) => {
+  if (backdropWindow && !backdropWindow.isDestroyed()) {
+    backdropWindow.close();
+    backdropWindow = null;
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.setAlwaysOnTop(false);
+    }
+  }
+  return false;
 });
 
 ipcMain.handle('fetch-url', async (event, url) => {

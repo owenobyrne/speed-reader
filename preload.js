@@ -15,5 +15,7 @@ contextBridge.exposeInMainWorld('fileAPI', {
 contextBridge.exposeInMainWorld('windowAPI', {
   minimizeWindow: () => ipcRenderer.invoke('minimize-window'),
   closeWindow: () => ipcRenderer.invoke('close-window'),
-  toggleFocusOverlay: () => ipcRenderer.invoke('toggle-focus-overlay')
+  toggleFocusOverlay: () => ipcRenderer.invoke('toggle-focus-overlay'),
+  showFocusOverlay: () => ipcRenderer.invoke('show-focus-overlay'),
+  hideFocusOverlay: () => ipcRenderer.invoke('hide-focus-overlay')
 });

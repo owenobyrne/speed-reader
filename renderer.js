@@ -471,6 +471,21 @@ async function toggleFocusOverlay() {
 }
 
 /**
+ * Hide focus overlay (for Escape key).
+ */
+async function hideFocusOverlay() {
+  await window.windowAPI.hideFocusOverlay();
+  showIndicator('Focus Mode Off');
+}
+
+/**
+ * Show focus overlay (for auto-show on content load).
+ */
+async function showFocusOverlay() {
+  await window.windowAPI.showFocusOverlay();
+}
+
+/**
  * Toggle context words display on/off.
  */
 function toggleContext() {
@@ -704,6 +719,7 @@ async function handleURL(url) {
 
     play();
     document.getElementById('drop-zone').classList.add('playing');
+    showFocusOverlay();
   } catch (error) {
     alert(`Error fetching URL: ${error.message}`);
     document.getElementById('word-display').innerHTML = '';
@@ -767,6 +783,7 @@ async function handleDroppedFile(file) {
 
     play();
     document.getElementById('drop-zone').classList.add('playing');
+    showFocusOverlay();
   } catch (error) {
     document.getElementById('word-display').innerHTML = '';
     alert(`Error reading file: ${error.message}`);
@@ -918,6 +935,10 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'KeyO':
         e.preventDefault();
         toggleFocusOverlay();
+        break;
+      case 'Escape':
+        e.preventDefault();
+        hideFocusOverlay();
         break;
     }
   });
