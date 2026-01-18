@@ -108,8 +108,10 @@ function advanceWord() {
 
   // Stop at end instead of looping
   if (state.currentIndex >= state.words.length) {
-    state.currentIndex = state.words.length - 1;
+    state.currentIndex = state.words.length; // Mark as finished (past last word)
     pause();
+    // Clear display at end
+    document.getElementById('word-display').innerHTML = '';
   }
 }
 
@@ -569,6 +571,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (state.isPlaying) {
           pause();
         } else {
+          // If at end, restart from beginning
+          if (state.currentIndex >= state.words.length) {
+            state.currentIndex = 0;
+          }
           play();
         }
         break;
