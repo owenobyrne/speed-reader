@@ -167,9 +167,13 @@ function advanceWord() {
   // Stop at end instead of looping
   if (state.currentIndex >= state.words.length) {
     state.currentIndex = state.words.length; // Mark as finished (past last word)
-    pause();
-    // Clear display at end
-    document.getElementById('word-display').innerHTML = '';
+    // Show last word for its full duration, then clear and pause
+    const baseDelay = calculateDelay(state.wpm);
+    const wordDelay = calculateWordDelay(currentWord, baseDelay);
+    setTimeout(() => {
+      pause();
+      document.getElementById('word-display').innerHTML = '';
+    }, wordDelay);
     return;
   }
 
@@ -319,6 +323,13 @@ function jumpForwardParagraph() {
 function setSpeed(wpm) {
   state.wpm = Math.max(100, Math.min(1000, wpm));
   showIndicator(`${state.wpm} WPM`);
+
+  // Save WPM preference to localStorage
+  try {
+    localStorage.setItem('speed-reader-wpm', state.wpm.toString());
+  } catch (e) {
+    console.warn('Could not save WPM preference:', e);
+  }
 
   // If playing, clear current timeout - next advanceWord call will use new WPM
   if (state.isPlaying && state.timeoutId) {
@@ -713,6 +724,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   } catch (e) {
     console.warn('Could not restore font preference:', e);
+  }
+
+  // Restore WPM preference from localStorage
+  try {
+    const savedWpm = localStorage.getItem('speed-reader-wpm');
+    if (savedWpm !== null) {
+      const wpm = parseInt(savedWpm, 10);
+      if (wpm >= 100 && wpm <= 1000) {
+        state.wpm = wpm;
+      }
+    }
+  } catch (e) {
+    console.warn('Could not restore WPM preference:', e);
   }
 
   // Keyboard controls
