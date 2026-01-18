@@ -4,29 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Speed Reader</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      background-color: #000;
-      color: #666;
-      font-family: 'Times New Roman', Times, serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
-    }
-    h1 {
-      font-size: 2rem;
-      font-weight: normal;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Speed Reader</h1>
+  <div class="rsvp-container">
+    <div class="guide-line top"><span class="tick"></span></div>
+    <div class="word-display" id="word-display"></div>
+    <div class="guide-line bottom"><span class="tick"></span></div>
+  </div>
 </body>
 </html>
