@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#000000"/>
+
+  <!-- Top guide line -->
+  <rect x="70" y="155" width="372" height="4" fill="rgba(255,255,255,0.4)"/>
+  <!-- Top tick mark (touches line, centered at x=256) -->
+  <rect x="253" y="155" width="6" height="45" fill="rgba(255,255,255,0.4)"/>
+
+  <!-- Bottom guide line -->
+  <rect x="70" y="351" width="372" height="6" fill="rgba(255,255,255,0.4)"/>
+  <!-- Bottom tick mark (touches line, centered at x=256) -->
+  <rect x="253" y="311" width="6" height="46" fill="rgba(255,255,255,0.4)"/>
+
+  <!-- Text: "s" in white, "r" in red with stem under tick -->
+  <text y="320" font-family="Merriweather, Georgia, serif" font-size="200" font-weight="400">
+    <tspan x="115" fill="#ffffff">s</tspan><tspan x="242" fill="#ff0000">r</tspan>
+  </text>
+</svg>
