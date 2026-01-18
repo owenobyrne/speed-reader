@@ -6,7 +6,8 @@ const state = {
   currentIndex: 0,
   isPlaying: false,
   wpm: 300,
-  intervalId: null
+  intervalId: null,
+  fontSize: 48
 };
 
 // Test text
@@ -117,6 +118,60 @@ function pause() {
 }
 
 /**
+ * Set playback speed (WPM).
+ * @param {number} wpm - Words per minute (clamped to 100-1000)
+ */
+function setSpeed(wpm) {
+  state.wpm = Math.max(100, Math.min(1000, wpm));
+  showIndicator(`${state.wpm} WPM`);
+
+  // If playing, restart interval with new delay
+  if (state.isPlaying) {
+    clearInterval(state.intervalId);
+    const delay = calculateDelay(state.wpm);
+    state.intervalId = setInterval(advanceWord, delay);
+  }
+}
+
+/**
+ * Set font size for word display.
+ * @param {number} size - Font size in pixels (clamped to 24-96)
+ */
+function setFontSize(size) {
+  state.fontSize = Math.max(24, Math.min(96, size));
+  const display = document.getElementById('word-display');
+  display.style.fontSize = `${state.fontSize}px`;
+  showIndicator(`${state.fontSize}px`);
+}
+
+/**
+ * Show a brief indicator message at bottom of screen.
+ * @param {string} message - Message to display
+ */
+function showIndicator(message) {
+  let indicator = document.getElementById('speed-indicator');
+
+  if (!indicator) {
+    indicator = document.createElement('div');
+    indicator.id = 'speed-indicator';
+    document.body.appendChild(indicator);
+  }
+
+  indicator.textContent = message;
+  indicator.classList.add('visible');
+
+  // Clear any existing timeout
+  if (indicator.timeoutId) {
+    clearTimeout(indicator.timeoutId);
+  }
+
+  // Fade out after 1 second
+  indicator.timeoutId = setTimeout(() => {
+    indicator.classList.remove('visible');
+  }, 1000);
+}
+
+/**
  * Load text and prepare for playback.
  * @param {string} text - Text to load
  */
@@ -209,6 +264,38 @@ document.addEventListener('DOMContentLoaded', () => {
   const dropZone = document.getElementById('drop-zone');
 
   console.log('Drop zone element:', dropZone);
+
+  // Keyboard controls
+  document.addEventListener('keydown', (e) => {
+    switch (e.code) {
+      case 'Space':
+        e.preventDefault();
+        if (state.isPlaying) {
+          pause();
+        } else {
+          play();
+        }
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setSpeed(state.wpm + 50);
+        break;
+      case 'ArrowDown':
+        e.preventDefault();
+        setSpeed(state.wpm - 50);
+        break;
+      case 'Equal': // + key (=/+)
+      case 'NumpadAdd':
+        e.preventDefault();
+        setFontSize(state.fontSize + 8);
+        break;
+      case 'Minus': // - key
+      case 'NumpadSubtract':
+        e.preventDefault();
+        setFontSize(state.fontSize - 8);
+        break;
+    }
+  });
 
   // Prevent default drag behavior on document and allow drops
   document.addEventListener('dragover', (e) => {
