@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-01-18)
 
 **Core value:** The reading experience must be smooth, comfortable, and visually refined
-**Current focus:** v1.0 MVP complete — ready for packaging or next milestone
+**Current focus:** v1.1 Polish — Reading timing, fonts, visual refinements
 
 ## Current Position
 
-Phase: 4 of 4 (Controls & Polish)
-Plan: 2 of 2 in current phase
-Status: Milestone v1.0 complete
-Last activity: 2026-01-18 — v1.0 milestone archived
+Phase: 5 of 7 (Reading Timing)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-01-18 — Milestone v1.1 created
 
-Progress: ██████████ 100%
+Progress: ██████░░░░ 57% (4/7 phases complete)
 
 ## Performance Metrics
 
@@ -40,14 +40,19 @@ See PROJECT.md Key Decisions table for complete list.
 
 ### Deferred Issues
 
-- ORP baseline alignment with surrounding word parts (visual polish)
+- ORP baseline alignment with surrounding word parts (scheduled for Phase 7)
 
 ### Blockers/Concerns
 
 None.
 
+### Roadmap Evolution
+
+- v1.0 MVP shipped: 4 phases, 6 plans (2026-01-18)
+- v1.1 Polish created: Reading timing, font system, visual polish (Phases 5-7)
+
 ## Session Continuity
 
 Last session: 2026-01-18
-Stopped at: v1.0 milestone complete
+Stopped at: Milestone v1.1 initialization
 Resume file: None
