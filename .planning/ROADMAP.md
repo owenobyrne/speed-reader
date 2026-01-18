@@ -47,9 +47,8 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 03-01: Drag-drop zone and file type detection
-- [ ] 03-02: Text extraction from PDF and Word
-- [ ] 03-03: Web URL text extraction
+- [x] 03-01: File infrastructure and document parsing
+- [ ] 03-02: Web URL text extraction
 
 ### Phase 4: Controls & Polish
 **Goal**: Full keyboard control, speed adjustment, navigation, and position persistence
@@ -70,5 +69,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Foundation | 1/1 | Complete | 2026-01-18 |
 | 2. Core Reader | 1/1 | Complete | 2026-01-18 |
-| 3. File Handling | 0/3 | Not started | - |
+| 3. File Handling | 1/2 | In progress | - |
 | 4. Controls & Polish | 0/2 | Not started | - |

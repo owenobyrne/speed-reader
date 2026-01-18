@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-18)
 
 **Core value:** The reading experience must be smooth, comfortable, and visually refined
-**Current focus:** Phase 2 — Core Reader
+**Current focus:** Phase 3 — File Handling
 
 ## Current Position
 
-Phase: 2 of 4 (Core Reader)
-Plan: 1 of 1 in current phase
-Status: Phase complete
-Last activity: 2026-01-18 — Completed 02-01-PLAN.md
+Phase: 3 of 4 (File Handling)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-01-18 — Completed 03-01-PLAN.md
 
-Progress: ██░░░░░░░░ 25%
+Progress: ███████░░░ 37%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
+- Total plans completed: 3
 - Average duration: 2 min
-- Total execution time: 4 min
+- Total execution time: 6 min
 
 **By Phase:**
 
@@ -29,9 +29,10 @@ Progress: ██░░░░░░░░ 25%
 |-------|-------|-------|----------|
 | 1-Foundation | 1 | 2 min | 2 min |
 | 2-Core Reader | 1 | 2 min | 2 min |
+| 3-File Handling | 1 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2 min), 02-01 (2 min)
+- Last 5 plans: 01-01 (2 min), 02-01 (2 min), 03-01 (2 min)
 - Trend: Stable
 
 ## Accumulated Context
@@ -46,6 +47,8 @@ Recent decisions affecting current work:
 | 01-01 | Security defaults (nodeIntegration: false, contextIsolation: true) | Electron best practice |
 | 02-01 | ORP at 35% from left | Standard RSVP positioning for faster recognition |
 | 02-01 | Default 300 WPM | Comfortable reading pace for testing |
+| 03-01 | pdf-parse over raw pdfjs-dist | Simpler text extraction API |
+| 03-01 | Minimal preload API (readFile, getExtension) | Security - expose only what's needed |
 
 ### Deferred Issues
 
@@ -58,5 +61,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-18
-Stopped at: Completed 02-01-PLAN.md (Phase 2 complete)
+Stopped at: Completed 03-01-PLAN.md (1 of 2 plans in Phase 3)
 Resume file: None
