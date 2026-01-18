@@ -10,3 +10,9 @@ contextBridge.exposeInMainWorld('fileAPI', {
   isURL: (str) => ipcRenderer.invoke('is-url', str),
   fetchURL: (url) => ipcRenderer.invoke('fetch-url', url)
 });
+
+// Expose window control API
+contextBridge.exposeInMainWorld('windowAPI', {
+  minimizeWindow: () => ipcRenderer.invoke('minimize-window'),
+  closeWindow: () => ipcRenderer.invoke('close-window')
+});

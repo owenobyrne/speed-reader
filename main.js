@@ -65,6 +65,15 @@ ipcMain.handle('is-url', (event, str) => {
   }
 });
 
+// Window control IPC handlers
+ipcMain.handle('minimize-window', (event) => {
+  BrowserWindow.fromWebContents(event.sender).minimize();
+});
+
+ipcMain.handle('close-window', (event) => {
+  BrowserWindow.fromWebContents(event.sender).close();
+});
+
 ipcMain.handle('fetch-url', async (event, url) => {
   if (!JSDOM) JSDOM = require('jsdom').JSDOM;
   if (!Readability) Readability = require('@mozilla/readability').Readability;
