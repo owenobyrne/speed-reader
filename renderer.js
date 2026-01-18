@@ -87,6 +87,9 @@ function updateProgress() {
 
   const progress = (state.currentIndex / state.words.length) * 100;
   progressFill.style.width = `${progress}%`;
+
+  // Also update position indicator
+  updatePositionIndicator();
 }
 
 /**
@@ -131,6 +134,9 @@ function pause() {
     clearInterval(state.intervalId);
     state.intervalId = null;
   }
+
+  // Save position when pausing
+  savePosition();
 }
 
 /**
@@ -280,6 +286,74 @@ function showIndicator(message) {
 }
 
 /**
+ * Save current reading position to localStorage.
+ * Only saves if there's a valid sourceId and content loaded.
+ */
+function savePosition() {
+  if (!state.sourceId || state.words.length === 0) return;
+
+  const key = `reading-position:${state.sourceId}`;
+  const data = {
+    index: state.currentIndex,
+    timestamp: Date.now()
+  };
+
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch (e) {
+    console.warn('Could not save reading position:', e);
+  }
+}
+
+/**
+ * Get saved reading position from localStorage.
+ * @param {string} sourceId - The document identifier
+ * @returns {number|null} - Saved word index, or null if not found/invalid
+ */
+function getSavedPosition(sourceId) {
+  if (!sourceId) return null;
+
+  const key = `reading-position:${sourceId}`;
+
+  try {
+    const stored = localStorage.getItem(key);
+    if (!stored) return null;
+
+    const data = JSON.parse(stored);
+    if (typeof data.index === 'number' && data.index >= 0) {
+      return data.index;
+    }
+  } catch (e) {
+    console.warn('Could not retrieve reading position:', e);
+  }
+
+  return null;
+}
+
+/**
+ * Update the position indicator display.
+ * Shows "Word X of Y" at bottom of screen.
+ */
+function updatePositionIndicator() {
+  let indicator = document.getElementById('position-indicator');
+
+  if (!indicator) {
+    indicator = document.createElement('div');
+    indicator.id = 'position-indicator';
+    document.body.appendChild(indicator);
+  }
+
+  if (state.words.length === 0) {
+    indicator.style.display = 'none';
+    return;
+  }
+
+  indicator.style.display = 'block';
+  const current = state.currentIndex + 1; // 1-indexed for display
+  indicator.textContent = `Word ${current} of ${state.words.length}`;
+}
+
+/**
  * Compute sentence and paragraph boundaries from source text.
  * Sentence starts: indices where a new sentence begins (after . ! ?)
  * Paragraph starts: indices where a new paragraph begins (after double newline)
@@ -379,7 +453,18 @@ async function handleURL(url) {
       return;
     }
 
+    // Set sourceId to the URL for position persistence
+    state.sourceId = url;
+
     loadText(text);
+
+    // Check for saved position and restore if valid
+    const savedPosition = getSavedPosition(state.sourceId);
+    if (savedPosition !== null && savedPosition < state.words.length) {
+      state.currentIndex = savedPosition;
+      updateProgress();
+    }
+
     play();
     document.getElementById('drop-zone').classList.add('playing');
   } catch (error) {
@@ -425,7 +510,19 @@ async function handleDroppedFile(file) {
       return;
     }
 
+    // Set sourceId to filename (extract from path) for position persistence
+    const filename = filePath.split(/[/\\]/).pop();
+    state.sourceId = filename;
+
     loadText(text);
+
+    // Check for saved position and restore if valid
+    const savedPosition = getSavedPosition(state.sourceId);
+    if (savedPosition !== null && savedPosition < state.words.length) {
+      state.currentIndex = savedPosition;
+      updateProgress();
+    }
+
     play();
     document.getElementById('drop-zone').classList.add('playing');
   } catch (error) {
@@ -558,6 +655,11 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       await handleURL(text);
     }
+  });
+
+  // Save position when closing app
+  window.addEventListener('beforeunload', () => {
+    savePosition();
   });
 
   console.log('Event listeners attached');
