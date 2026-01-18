@@ -1,6 +1,10 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, screen } = require('electron');
 const path = require('path');
 const fs = require('fs');
+
+// Window references at module scope for z-order management
+let mainWindow = null;
+let backdropWindow = null;
 
 // Disable GPU acceleration to avoid GPU process errors on some systems
 app.disableHardwareAcceleration();
@@ -13,8 +17,56 @@ app.commandLine.appendSwitch('disable-features', 'CalculateNativeWinOcclusion');
 // Lazy-loaded dependencies (heavy libs loaded only when needed)
 let JSDOM, Readability, pdfParse, mammoth;
 
+/**
+ * Create a fullscreen dark backdrop window for focus mode.
+ * Non-focusable so clicks pass through to main window.
+ */
+function createBackdropWindow() {
+  const primaryDisplay = screen.getPrimaryDisplay();
+  const { width, height } = primaryDisplay.bounds;
+
+  backdropWindow = new BrowserWindow({
+    width: width,
+    height: height,
+    x: 0,
+    y: 0,
+    frame: false,
+    backgroundColor: '#000000',
+    skipTaskbar: true,
+    focusable: false,
+    alwaysOnTop: true,
+    type: 'desktop', // Below normal windows but covers desktop
+    show: false,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true
+    }
+  });
+
+  // Use fullscreen for complete coverage
+  backdropWindow.setFullScreen(true);
+  backdropWindow.setAlwaysOnTop(true, 'normal');
+
+  // Show after setup
+  backdropWindow.show();
+
+  // Ensure main window stays above backdrop
+  if (mainWindow) {
+    mainWindow.setAlwaysOnTop(true, 'floating');
+    mainWindow.focus();
+  }
+
+  backdropWindow.on('closed', () => {
+    backdropWindow = null;
+    // Reset main window z-order when backdrop closes
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.setAlwaysOnTop(false);
+    }
+  });
+}
+
 function createWindow() {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     frame: false,
@@ -28,6 +80,14 @@ function createWindow() {
   });
 
   mainWindow.loadFile('index.html');
+
+  // Clean up backdrop when main window closes
+  mainWindow.on('closed', () => {
+    if (backdropWindow && !backdropWindow.isDestroyed()) {
+      backdropWindow.close();
+    }
+    mainWindow = null;
+  });
 }
 
 // IPC Handlers for file operations
@@ -72,6 +132,24 @@ ipcMain.handle('minimize-window', (event) => {
 
 ipcMain.handle('close-window', (event) => {
   BrowserWindow.fromWebContents(event.sender).close();
+});
+
+// Focus overlay toggle
+ipcMain.handle('toggle-focus-overlay', (event) => {
+  if (backdropWindow && !backdropWindow.isDestroyed()) {
+    // Backdrop exists - close it
+    backdropWindow.close();
+    backdropWindow = null;
+    // Reset main window z-order
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.setAlwaysOnTop(false);
+    }
+    return false; // Overlay is now off
+  } else {
+    // No backdrop - create it
+    createBackdropWindow();
+    return true; // Overlay is now on
+  }
 });
 
 ipcMain.handle('fetch-url', async (event, url) => {
