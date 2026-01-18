@@ -8,6 +8,7 @@ Build a cross-platform RSVP reader from scratch: scaffold the Electron app, impl
 
 - ✅ [v1.0 MVP](milestones/v1.0-ROADMAP.md) — Phases 1-4 (shipped 2026-01-18)
 - ✅ [v1.1 Polish](milestones/v1.1-ROADMAP.md) — Phases 5-7 (shipped 2026-01-18)
+- 🚧 **v1.2 UI Refinements** — Phase 8 (in progress)
 
 ## Completed Milestones
 
@@ -36,6 +37,20 @@ Build a cross-platform RSVP reader from scratch: scaffold the Electron app, impl
 
 </details>
 
+### 🚧 v1.2 UI Refinements (In Progress)
+
+**Milestone Goal:** Frameless window with custom title bar controls for cleaner visual appearance.
+
+#### Phase 8: Frameless Window
+
+**Goal**: Remove window chrome, add custom close/minimize icons in top right
+**Depends on**: Phase 7 (v1.1 complete)
+**Research**: Unlikely (Electron frameless window is well-documented)
+**Plans**: TBD
+
+Plans:
+- [ ] 08-01: TBD (run /gsd:plan-phase 8 to break down)
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -47,3 +62,4 @@ Build a cross-platform RSVP reader from scratch: scaffold the Electron app, impl
 | 5. Reading Timing | v1.1 | 1/1 | Complete | 2026-01-18 |
 | 6. Font System | v1.1 | 1/1 | Complete | 2026-01-18 |
 | 7. Visual Polish | v1.1 | 1/1 | Complete | 2026-01-18 |
+| 8. Frameless Window | v1.2 | 0/? | Not started | - |

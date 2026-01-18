@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-01-18)
 
 **Core value:** The reading experience must be smooth, comfortable, and visually refined
-**Current focus:** Planning next milestone (or project complete)
+**Current focus:** v1.2 UI Refinements — Frameless window with custom controls
 
 ## Current Position
 
-Phase: 7 of 7 (all complete)
-Plan: N/A
-Status: v1.1 milestone shipped
-Last activity: 2026-01-18 — v1.1 milestone complete
+Phase: 8 of 8 (Frameless Window)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-01-18 — Milestone v1.2 created
 
-Progress: ██████████ 100% (7/7 phases complete, 2 milestones shipped)
+Progress: ███████░░░ 87% (7/8 phases complete)
 
 ## Performance Metrics
 
@@ -29,6 +29,7 @@ Progress: ██████████ 100% (7/7 phases complete, 2 milestones
 |-----------|--------|-------|----------|
 | v1.0 MVP | 1-4 | 6 | ~67 min |
 | v1.1 Polish | 5-7 | 3 | ~10 min |
+| v1.2 UI Refinements | 8 | TBD | - |
 
 ## Accumulated Context
 
@@ -48,9 +49,10 @@ None.
 
 - v1.0 MVP shipped: 4 phases, 6 plans (2026-01-18)
 - v1.1 Polish shipped: 3 phases, 3 plans (2026-01-18)
+- v1.2 UI Refinements created: 1 phase (Phase 8)
 
 ## Session Continuity
 
 Last session: 2026-01-18
-Stopped at: v1.1 milestone complete
+Stopped at: Milestone v1.2 initialization
 Resume file: None
