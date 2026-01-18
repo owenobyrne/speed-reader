@@ -18,8 +18,16 @@ const state = {
   navTapThreshold: 500,     // ms threshold for "quick" successive taps
   // Timing mode: 0=pure WPM, 1=punctuation-only, 2=length+punctuation
   timingMode: 2,
-  // Font options
-  fonts: ['Times New Roman', 'Tinos', 'EB Garamond', 'Merriweather', 'Libre Baskerville', 'Spectral'],
+  // Font options with per-font scale factors to normalize visual size
+  // Scale factors compensate for different x-heights/metrics across fonts
+  fonts: [
+    { name: 'Times New Roman', scale: 1.0 },
+    { name: 'Tinos', scale: 1.0 },
+    { name: 'EB Garamond', scale: 1.12 },      // Smaller x-height, scale up
+    { name: 'Merriweather', scale: 0.92 },     // Larger x-height, scale down
+    { name: 'Libre Baskerville', scale: 0.95 },
+    { name: 'Spectral', scale: 1.02 }
+  ],
   currentFontIndex: 0
 };
 
@@ -325,7 +333,12 @@ function setSpeed(wpm) {
 function setFontSize(size) {
   state.fontSize = Math.max(24, Math.min(96, size));
   const display = document.getElementById('word-display');
-  display.style.fontSize = `${state.fontSize}px`;
+
+  // Apply per-font scaling to normalize visual size
+  const font = state.fonts[state.currentFontIndex];
+  const scaledSize = Math.round(state.fontSize * font.scale);
+  display.style.fontSize = `${scaledSize}px`;
+
   // Scale container height proportionally (1.25x font size)
   display.style.height = `${state.fontSize * 1.25}px`;
   showIndicator(`${state.fontSize}px`);
@@ -341,19 +354,24 @@ function cycleTimingMode() {
 }
 
 /**
- * Set font by index and apply to display.
+ * Set font by index and apply to display with per-font scaling.
  * @param {number} index - Index into state.fonts array
  */
 function setFont(index) {
   state.currentFontIndex = index;
-  const fontName = state.fonts[index];
-  const fontFamily = `'${fontName}', serif`;
+  const font = state.fonts[index];
+  const fontFamily = `'${font.name}', serif`;
 
-  // Apply to body and word display
+  // Apply font family to body and word display
   document.body.style.fontFamily = fontFamily;
-  document.getElementById('word-display').style.fontFamily = fontFamily;
+  const display = document.getElementById('word-display');
+  display.style.fontFamily = fontFamily;
 
-  showIndicator(fontName);
+  // Apply per-font scaling to normalize visual size with guide lines
+  const scaledSize = Math.round(state.fontSize * font.scale);
+  display.style.fontSize = `${scaledSize}px`;
+
+  showIndicator(font.name);
 
   // Save preference to localStorage
   try {
@@ -676,10 +694,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (fontIndex >= 0 && fontIndex < state.fonts.length) {
         // Apply font without showing indicator on load
         state.currentFontIndex = fontIndex;
-        const fontName = state.fonts[fontIndex];
-        const fontFamily = `'${fontName}', serif`;
+        const font = state.fonts[fontIndex];
+        const fontFamily = `'${font.name}', serif`;
         document.body.style.fontFamily = fontFamily;
-        document.getElementById('word-display').style.fontFamily = fontFamily;
+        const display = document.getElementById('word-display');
+        display.style.fontFamily = fontFamily;
+        // Apply per-font scaling
+        const scaledSize = Math.round(state.fontSize * font.scale);
+        display.style.fontSize = `${scaledSize}px`;
       }
     }
   } catch (e) {
