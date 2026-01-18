@@ -38,15 +38,14 @@ Build a cross-platform RSVP reader from scratch: scaffold the Electron app, impl
 Plans:
 - [x] 05-01: Variable word timing with length/punctuation adjustments
 
-#### Phase 6: Font System
+#### Phase 6: Font System ✓
 
 **Goal**: Google Fonts integration with "f" key cycling through font options
 **Depends on**: Phase 5
-**Research**: Likely (Google Fonts API/loading in Electron)
-**Research topics**: Loading Google Fonts in Electron (web fonts vs local), font preloading
-**Plans**: TBD
+**Research**: None needed (bundled locally)
+**Plans**: 1
 
-Fonts to support:
+Fonts supported:
 - Times New Roman (default, local)
 - Tinos (Google Font)
 - EB Garamond (Google Font)
@@ -55,7 +54,7 @@ Fonts to support:
 - Spectral (Google Font)
 
 Plans:
-- [ ] 06-01: TBD
+- [x] 06-01: Bundle Google Fonts locally, implement font cycling with persistence
 
 #### Phase 7: Visual Polish
 
@@ -76,5 +75,5 @@ Plans:
 | 3. File Handling | v1.0 | 2/2 | Complete | 2026-01-18 |
 | 4. Controls & Polish | v1.0 | 2/2 | Complete | 2026-01-18 |
 | 5. Reading Timing | v1.1 | 1/1 | Complete | 2026-01-18 |
-| 6. Font System | v1.1 | 0/? | Not started | - |
+| 6. Font System | v1.1 | 1/1 | Complete | 2026-01-18 |
 | 7. Visual Polish | v1.1 | 0/? | Not started | - |
