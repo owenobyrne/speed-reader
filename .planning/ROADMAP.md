@@ -8,7 +8,7 @@ Build a cross-platform RSVP reader from scratch: scaffold the Electron app, impl
 
 - ✅ [v1.0 MVP](milestones/v1.0-ROADMAP.md) — Phases 1-4 (shipped 2026-01-18)
 - ✅ [v1.1 Polish](milestones/v1.1-ROADMAP.md) — Phases 5-7 (shipped 2026-01-18)
-- ✅ **v1.2 UI Refinements** — Phase 8 (shipped 2026-01-18)
+- ✅ **v1.2 UI Refinements** — Phases 8-9 (shipped 2026-01-18)
 
 ## Completed Milestones
 
@@ -37,17 +37,17 @@ Build a cross-platform RSVP reader from scratch: scaffold the Electron app, impl
 
 </details>
 
-### ✅ v1.2 UI Refinements (Complete)
+<details>
+<summary>✅ v1.2 UI Refinements (Phases 8-9) — SHIPPED 2026-01-18</summary>
 
-**Milestone Goal:** Frameless window with custom title bar controls for cleaner visual appearance.
+**Milestone Goal:** Frameless window with custom controls and focus overlay for distraction-free reading.
 
-#### Phase 8: Frameless Window — COMPLETE
+- [x] **Phase 8: Frameless Window** — Custom title bar with minimize/close controls
+- [x] **Phase 9: Focus Overlay** — Fullscreen dark backdrop with 'o' key toggle
 
-**Goal**: Remove window chrome, add custom close/minimize icons in top right
-**Depends on**: Phase 7 (v1.1 complete)
+**Plans completed:** 2 total
 
-Plans:
-- [x] 08-01: Frameless window with custom controls
+</details>
 
 ## Progress
 
@@ -61,3 +61,4 @@ Plans:
 | 6. Font System | v1.1 | 1/1 | Complete | 2026-01-18 |
 | 7. Visual Polish | v1.1 | 1/1 | Complete | 2026-01-18 |
 | 8. Frameless Window | v1.2 | 1/1 | Complete | 2026-01-18 |
+| 9. Focus Overlay | v1.2 | 1/1 | Complete | 2026-01-18 |
