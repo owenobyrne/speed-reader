@@ -355,6 +355,13 @@ function setFontSize(size) {
   // Scale container height proportionally (1.25x font size)
   display.style.height = `${state.fontSize * 1.25}px`;
   showIndicator(`${state.fontSize}px`);
+
+  // Save font size preference to localStorage
+  try {
+    localStorage.setItem('speed-reader-font-size', state.fontSize.toString());
+  } catch (e) {
+    console.warn('Could not save font size preference:', e);
+  }
 }
 
 /**
@@ -700,6 +707,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressFill = document.createElement('span');
     progressFill.id = 'progress-fill';
     bottomGuideLine.appendChild(progressFill);
+  }
+
+  // Restore font size preference from localStorage (before font, as font applies scaling)
+  try {
+    const savedFontSize = localStorage.getItem('speed-reader-font-size');
+    if (savedFontSize !== null) {
+      const size = parseInt(savedFontSize, 10);
+      if (size >= 24 && size <= 96) {
+        state.fontSize = size;
+        // Also update container height
+        const display = document.getElementById('word-display');
+        display.style.height = `${state.fontSize * 1.25}px`;
+      }
+    }
+  } catch (e) {
+    console.warn('Could not restore font size preference:', e);
   }
 
   // Restore font preference from localStorage
