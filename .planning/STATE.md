@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-18)
 
 **Core value:** The reading experience must be smooth, comfortable, and visually refined
-**Current focus:** Phase 4 — Controls & Polish
+**Current focus:** Milestone complete — all phases done
 
 ## Current Position
 
 Phase: 4 of 4 (Controls & Polish)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-01-18 — Completed 04-01-PLAN.md
+Plan: 2 of 2 in current phase
+Status: Complete
+Last activity: 2026-01-18 — Completed 04-02-PLAN.md
 
-Progress: █████████░ 83%
+Progress: ██████████ 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: 9 min
-- Total execution time: 45 min
+- Total plans completed: 6
+- Average duration: 11 min
+- Total execution time: 67 min
 
 **By Phase:**
 
@@ -30,11 +30,11 @@ Progress: █████████░ 83%
 | 1-Foundation | 1 | 2 min | 2 min |
 | 2-Core Reader | 1 | 2 min | 2 min |
 | 3-File Handling | 2 | 32 min | 16 min |
-| 4-Controls & Polish | 1 | 9 min | 9 min |
+| 4-Controls & Polish | 2 | 31 min | 15.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (2 min), 03-01 (2 min), 03-02 (30 min), 04-01 (9 min)
-- Trend: 04-01 included user-requested enhancements (progress bar, guide scaling)
+- Last 5 plans: 03-01 (2 min), 03-02 (30 min), 04-01 (9 min), 04-02 (22 min)
+- Trend: Later plans included more user-requested refinements during verification
 
 ## Accumulated Context
 
@@ -52,6 +52,8 @@ Recent decisions affecting current work:
 | 03-02 | IPC architecture for parsing | jsdom/heavy libs must run in main process |
 | 03-02 | Lazy-load heavy dependencies | Fast startup (~instant vs 10s) |
 | 03-02 | webUtils.getPathForFile | Required for file paths with contextIsolation |
+| 04-02 | Quick-tap navigation (500ms) | Media player style UX |
+| 04-02 | Stop at end, don't loop | More natural reading behavior |
 
 ### Deferred Issues
 
@@ -64,5 +66,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-18
-Stopped at: Completed 04-01-PLAN.md - ready for 04-02
+Stopped at: Completed 04-02-PLAN.md - all phases complete
 Resume file: None

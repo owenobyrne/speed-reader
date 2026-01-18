@@ -57,7 +57,7 @@ Plans:
 
 Plans:
 - [x] 04-01: Keyboard shortcuts (speed, pause/play, font size)
-- [ ] 04-02: Navigation (jump sentence/paragraph) and position saving
+- [x] 04-02: Navigation (jump sentence/paragraph) and position saving
 
 ## Progress
 
@@ -69,4 +69,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Foundation | 1/1 | Complete | 2026-01-18 |
 | 2. Core Reader | 1/1 | Complete | 2026-01-18 |
 | 3. File Handling | 2/2 | Complete | 2026-01-18 |
-| 4. Controls & Polish | 1/2 | In progress | - |
+| 4. Controls & Polish | 2/2 | Complete | 2026-01-18 |
