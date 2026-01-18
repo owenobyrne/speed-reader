@@ -1,4 +1,6 @@
 // RSVP Display Engine
+const pdfParse = require('pdf-parse');
+const mammoth = require('mammoth');
 
 // State
 const state = {
@@ -113,8 +115,90 @@ function loadText(text) {
   state.currentIndex = 0;
 }
 
-// Initialize on load
+/**
+ * Parse PDF buffer and extract text.
+ * @param {Buffer} buffer - PDF file buffer
+ * @returns {Promise<string>} - Extracted text
+ */
+async function parsePDF(buffer) {
+  const data = await pdfParse(buffer);
+  return data.text;
+}
+
+/**
+ * Parse Word document buffer and extract text.
+ * @param {Buffer} buffer - .docx file buffer
+ * @returns {Promise<string>} - Extracted text
+ */
+async function parseDocx(buffer) {
+  const result = await mammoth.extractRawText({ buffer });
+  return result.value;
+}
+
+/**
+ * Handle dropped file - extract text and load into RSVP.
+ * @param {File} file - Dropped file object
+ */
+async function handleDroppedFile(file) {
+  const filePath = file.path;
+  const ext = window.fileAPI.getExtension(filePath);
+
+  try {
+    const buffer = window.fileAPI.readFile(filePath);
+    let text;
+
+    switch (ext) {
+      case '.pdf':
+        text = await parsePDF(buffer);
+        break;
+      case '.docx':
+        text = await parseDocx(buffer);
+        break;
+      case '.txt':
+        text = buffer.toString('utf-8');
+        break;
+      default:
+        alert(`Unsupported file format: ${ext}\nSupported formats: .pdf, .docx, .txt`);
+        return;
+    }
+
+    if (!text || text.trim().length === 0) {
+      alert('No text found in document. The file may be empty or contain only images.');
+      return;
+    }
+
+    loadText(text);
+    play();
+    document.getElementById('drop-zone').classList.add('playing');
+  } catch (error) {
+    alert(`Error reading file: ${error.message}`);
+  }
+}
+
+// Drag and drop event handlers
+const dropZone = document.getElementById('drop-zone');
+
+dropZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  dropZone.classList.add('dragover');
+});
+
+dropZone.addEventListener('dragleave', (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+});
+
+dropZone.addEventListener('drop', async (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    await handleDroppedFile(file);
+  }
+});
+
+// Initialize on load - show drop zone, don't auto-play test text
 document.addEventListener('DOMContentLoaded', () => {
-  loadText(TEST_TEXT);
-  play();
+  // Ready for file drop
 });

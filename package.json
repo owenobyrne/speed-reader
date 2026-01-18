@@ -7,10 +7,18 @@
     "start": "electron .",
     "build": "electron-builder"
   },
-  "keywords": ["rsvp", "speed-reading", "electron"],
+  "keywords": [
+    "rsvp",
+    "speed-reading",
+    "electron"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "electron": "^40.0.0"
+  },
+  "dependencies": {
+    "mammoth": "^1.11.0",
+    "pdf-parse": "^2.4.5"
   }
 }
