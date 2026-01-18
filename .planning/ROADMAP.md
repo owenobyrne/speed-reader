@@ -15,7 +15,7 @@ None
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Foundation** - Electron app scaffold with basic window
-- [ ] **Phase 2: Core Reader** - RSVP display with ORP highlighting and visual design
+- [x] **Phase 2: Core Reader** - RSVP display with ORP highlighting and visual design
 - [ ] **Phase 3: File Handling** - Drag-drop input, text extraction from PDF/Word/URLs
 - [ ] **Phase 4: Controls & Polish** - Keyboard controls, navigation, speed adjustment, position saving
 
@@ -37,8 +37,7 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 02-01: RSVP display engine with ORP highlighting
-- [ ] 02-02: Visual design (black bg, guide lines, tick marks, Times New Roman)
+- [x] 02-01: RSVP display engine with ORP highlighting and visual design (consolidated)
 
 ### Phase 3: File Handling
 **Goal**: Accept files via drag-drop, extract text from PDF, Word docs, and web URLs
@@ -70,6 +69,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 1/1 | Complete | 2026-01-18 |
-| 2. Core Reader | 0/2 | Not started | - |
+| 2. Core Reader | 1/1 | Complete | 2026-01-18 |
 | 3. File Handling | 0/3 | Not started | - |
 | 4. Controls & Polish | 0/2 | Not started | - |
