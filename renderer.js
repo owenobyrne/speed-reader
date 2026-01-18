@@ -141,6 +141,8 @@ function setFontSize(size) {
   state.fontSize = Math.max(24, Math.min(96, size));
   const display = document.getElementById('word-display');
   display.style.fontSize = `${state.fontSize}px`;
+  // Scale container height proportionally (1.25x font size)
+  display.style.height = `${state.fontSize * 1.25}px`;
   showIndicator(`${state.fontSize}px`);
 }
 
