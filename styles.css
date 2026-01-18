@@ -56,3 +56,21 @@ body {
   position: relative;
   width: 100%;
 }
+
+/* Word parts for ORP alignment */
+.word-before {
+  text-align: right;
+}
+
+.orp {
+  color: #ff0000;
+}
+
+.word-after {
+  text-align: left;
+}
+
+/* Use a wrapper to position ORP at center */
+.word-display span {
+  display: inline;
+}
