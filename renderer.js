@@ -6,7 +6,7 @@ const state = {
   currentIndex: 0,
   isPlaying: false,
   wpm: 300,
-  intervalId: null,
+  timeoutId: null,          // Changed from intervalId for dynamic per-word scheduling
   fontSize: 48,
   sourceText: '',           // Original full text for boundary detection
   sourceId: '',             // Identifier for position saving (filename or URL)
@@ -130,12 +130,14 @@ function updateProgress() {
 }
 
 /**
- * Advance to next word and display it.
+ * Advance to next word and display it, then schedule the next advance.
+ * Uses setTimeout chaining for variable per-word timing.
  */
 function advanceWord() {
   if (state.words.length === 0) return;
 
-  displayWord(state.words[state.currentIndex]);
+  const currentWord = state.words[state.currentIndex];
+  displayWord(currentWord);
   state.currentIndex++;
   updateProgress();
 
@@ -145,22 +147,28 @@ function advanceWord() {
     pause();
     // Clear display at end
     document.getElementById('word-display').innerHTML = '';
+    return;
+  }
+
+  // Schedule next word with variable delay based on current word
+  if (state.isPlaying) {
+    const baseDelay = calculateDelay(state.wpm);
+    const wordDelay = calculateWordDelay(currentWord, baseDelay);
+    state.timeoutId = setTimeout(advanceWord, wordDelay);
   }
 }
 
 /**
  * Start playback.
+ * Uses setTimeout chaining via advanceWord for variable per-word timing.
  */
 function play() {
   if (state.isPlaying) return;
 
   state.isPlaying = true;
-  const delay = calculateDelay(state.wpm);
 
-  // Show first word immediately
+  // Show first word immediately - advanceWord will chain subsequent calls
   advanceWord();
-
-  state.intervalId = setInterval(advanceWord, delay);
 }
 
 /**
@@ -170,9 +178,9 @@ function pause() {
   if (!state.isPlaying) return;
 
   state.isPlaying = false;
-  if (state.intervalId) {
-    clearInterval(state.intervalId);
-    state.intervalId = null;
+  if (state.timeoutId) {
+    clearTimeout(state.timeoutId);
+    state.timeoutId = null;
   }
 
   // Save position when pausing
@@ -289,11 +297,11 @@ function setSpeed(wpm) {
   state.wpm = Math.max(100, Math.min(1000, wpm));
   showIndicator(`${state.wpm} WPM`);
 
-  // If playing, restart interval with new delay
-  if (state.isPlaying) {
-    clearInterval(state.intervalId);
-    const delay = calculateDelay(state.wpm);
-    state.intervalId = setInterval(advanceWord, delay);
+  // If playing, clear current timeout - next advanceWord call will use new WPM
+  if (state.isPlaying && state.timeoutId) {
+    clearTimeout(state.timeoutId);
+    // Immediately schedule next word with new speed
+    advanceWord();
   }
 }
 
