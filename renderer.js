@@ -463,6 +463,14 @@ function cycleFont() {
 }
 
 /**
+ * Toggle focus overlay (dark backdrop behind window).
+ */
+async function toggleFocusOverlay() {
+  const isOn = await window.windowAPI.toggleFocusOverlay();
+  showIndicator(isOn ? 'Focus Mode' : 'Focus Mode Off');
+}
+
+/**
  * Toggle context words display on/off.
  */
 function toggleContext() {
@@ -906,6 +914,10 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'KeyC':
         e.preventDefault();
         toggleContext();
+        break;
+      case 'KeyO':
+        e.preventDefault();
+        toggleFocusOverlay();
         break;
     }
   });
