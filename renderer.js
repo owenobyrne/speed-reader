@@ -136,6 +136,40 @@ async function parseDocx(buffer) {
 }
 
 /**
+ * Show loading state in word display.
+ * @param {string} message - Loading message to show
+ */
+function showLoading(message) {
+  const display = document.getElementById('word-display');
+  display.innerHTML = `<span style="color: rgba(255,255,255,0.5); font-size: 24px;">${message}</span>`;
+}
+
+/**
+ * Handle URL - fetch and extract article text.
+ * @param {string} url - URL to fetch
+ */
+async function handleURL(url) {
+  showLoading('Loading...');
+
+  try {
+    const text = await window.fileAPI.fetchURL(url);
+
+    if (!text || text.trim().length === 0) {
+      alert('No article content found at this URL.');
+      document.getElementById('word-display').innerHTML = '';
+      return;
+    }
+
+    loadText(text);
+    play();
+    document.getElementById('drop-zone').classList.add('playing');
+  } catch (error) {
+    alert(`Error fetching URL: ${error.message}`);
+    document.getElementById('word-display').innerHTML = '';
+  }
+}
+
+/**
  * Handle dropped file - extract text and load into RSVP.
  * @param {File} file - Dropped file object
  */
@@ -192,9 +226,26 @@ dropZone.addEventListener('drop', async (e) => {
   e.preventDefault();
   dropZone.classList.remove('dragover');
 
+  // Check for dropped file first
   const file = e.dataTransfer.files[0];
   if (file) {
     await handleDroppedFile(file);
+    return;
+  }
+
+  // Check for dropped text (URL)
+  const text = e.dataTransfer.getData('text/plain');
+  if (text && window.fileAPI.isURL(text)) {
+    await handleURL(text);
+  }
+});
+
+// Paste handler for URLs
+document.addEventListener('paste', async (e) => {
+  const text = e.clipboardData.getData('text/plain');
+  if (text && window.fileAPI.isURL(text)) {
+    e.preventDefault();
+    await handleURL(text);
   }
 });
 
