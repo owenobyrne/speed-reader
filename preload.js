@@ -1,49 +1,12 @@
-const { contextBridge } = require('electron');
-const fs = require('fs');
-const path = require('path');
-const { JSDOM } = require('jsdom');
-const { Readability } = require('@mozilla/readability');
+const { contextBridge, ipcRenderer, webUtils } = require('electron');
 
-/**
- * Check if a string is a valid HTTP/HTTPS URL.
- * @param {string} str - String to check
- * @returns {boolean} - True if valid URL
- */
-function isURL(str) {
-  try {
-    const url = new URL(str);
-    return url.protocol === 'http:' || url.protocol === 'https:';
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Fetch a URL and extract article text using Readability.
- * @param {string} url - URL to fetch
- * @returns {Promise<string>} - Extracted article text
- */
-async function fetchURL(url) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch URL: ${response.status} ${response.statusText}`);
-  }
-
-  const html = await response.text();
-  const dom = new JSDOM(html, { url });
-  const reader = new Readability(dom.window.document);
-  const article = reader.parse();
-
-  if (!article || !article.textContent) {
-    throw new Error('Could not extract article content from this URL');
-  }
-
-  return article.textContent;
-}
-
+// Expose file API via IPC to main process
 contextBridge.exposeInMainWorld('fileAPI', {
-  readFile: (filePath) => fs.readFileSync(filePath),
-  getExtension: (filePath) => path.extname(filePath).toLowerCase(),
-  isURL: isURL,
-  fetchURL: fetchURL
+  getPathForFile: (file) => webUtils.getPathForFile(file),
+  getExtension: (filePath) => ipcRenderer.invoke('get-extension', filePath),
+  readTextFile: (filePath) => ipcRenderer.invoke('read-text-file', filePath),
+  parsePDF: (filePath) => ipcRenderer.invoke('parse-pdf', filePath),
+  parseDocx: (filePath) => ipcRenderer.invoke('parse-docx', filePath),
+  isURL: (str) => ipcRenderer.invoke('is-url', str),
+  fetchURL: (url) => ipcRenderer.invoke('fetch-url', url)
 });

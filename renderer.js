@@ -1,6 +1,4 @@
 // RSVP Display Engine
-const pdfParse = require('pdf-parse');
-const mammoth = require('mammoth');
 
 // State
 const state = {
@@ -16,14 +14,15 @@ const TEST_TEXT = "The quick brown fox jumps over the lazy dog. This is a test o
 
 /**
  * Calculate the Optimal Recognition Point (ORP) index for a word.
- * ORP is typically around 35% from the left of the word.
+ * ORP is positioned ~40% into the word for comfortable reading.
  * @param {string} word - The word to calculate ORP for
  * @returns {number} - The index of the ORP letter
  */
 function calculateORP(word) {
   if (word.length <= 1) return 0;
-  if (word.length <= 3) return 0;
-  return Math.max(0, Math.floor(word.length * 0.35) - 1);
+  if (word.length <= 3) return 1;
+  if (word.length <= 5) return 1;
+  return Math.floor(word.length * 0.4);
 }
 
 /**
@@ -43,6 +42,17 @@ function displayWord(word) {
   const after = word.substring(orpIndex + 1);
 
   display.innerHTML = `<span class="word-before">${before}</span><span class="orp">${orp}</span><span class="word-after">${after}</span>`;
+
+  // Measure ORP character width and adjust positioning
+  const orpEl = display.querySelector('.orp');
+  const beforeEl = display.querySelector('.word-before');
+  const afterEl = display.querySelector('.word-after');
+
+  const orpWidth = orpEl.offsetWidth;
+  const halfOrp = orpWidth / 2;
+
+  beforeEl.style.right = `calc(50% + ${halfOrp}px)`;
+  afterEl.style.left = `calc(50% + ${halfOrp}px)`;
 }
 
 /**
@@ -116,26 +126,6 @@ function loadText(text) {
 }
 
 /**
- * Parse PDF buffer and extract text.
- * @param {Buffer} buffer - PDF file buffer
- * @returns {Promise<string>} - Extracted text
- */
-async function parsePDF(buffer) {
-  const data = await pdfParse(buffer);
-  return data.text;
-}
-
-/**
- * Parse Word document buffer and extract text.
- * @param {Buffer} buffer - .docx file buffer
- * @returns {Promise<string>} - Extracted text
- */
-async function parseDocx(buffer) {
-  const result = await mammoth.extractRawText({ buffer });
-  return result.value;
-}
-
-/**
  * Show loading state in word display.
  * @param {string} message - Loading message to show
  */
@@ -174,22 +164,27 @@ async function handleURL(url) {
  * @param {File} file - Dropped file object
  */
 async function handleDroppedFile(file) {
-  const filePath = file.path;
-  const ext = window.fileAPI.getExtension(filePath);
+  const filePath = window.fileAPI.getPathForFile(file);
+
+  if (!filePath) {
+    alert('Could not get file path. Try dragging the file directly from File Explorer.');
+    return;
+  }
+
+  const ext = await window.fileAPI.getExtension(filePath);
 
   try {
-    const buffer = window.fileAPI.readFile(filePath);
     let text;
 
     switch (ext) {
       case '.pdf':
-        text = await parsePDF(buffer);
+        text = await window.fileAPI.parsePDF(filePath);
         break;
       case '.docx':
-        text = await parseDocx(buffer);
+        text = await window.fileAPI.parseDocx(filePath);
         break;
       case '.txt':
-        text = buffer.toString('utf-8');
+        text = await window.fileAPI.readTextFile(filePath);
         break;
       default:
         alert(`Unsupported file format: ${ext}\nSupported formats: .pdf, .docx, .txt`);
@@ -209,47 +204,76 @@ async function handleDroppedFile(file) {
   }
 }
 
-// Drag and drop event handlers
-const dropZone = document.getElementById('drop-zone');
-
-dropZone.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  dropZone.classList.add('dragover');
-});
-
-dropZone.addEventListener('dragleave', (e) => {
-  e.preventDefault();
-  dropZone.classList.remove('dragover');
-});
-
-dropZone.addEventListener('drop', async (e) => {
-  e.preventDefault();
-  dropZone.classList.remove('dragover');
-
-  // Check for dropped file first
-  const file = e.dataTransfer.files[0];
-  if (file) {
-    await handleDroppedFile(file);
-    return;
-  }
-
-  // Check for dropped text (URL)
-  const text = e.dataTransfer.getData('text/plain');
-  if (text && window.fileAPI.isURL(text)) {
-    await handleURL(text);
-  }
-});
-
-// Paste handler for URLs
-document.addEventListener('paste', async (e) => {
-  const text = e.clipboardData.getData('text/plain');
-  if (text && window.fileAPI.isURL(text)) {
-    e.preventDefault();
-    await handleURL(text);
-  }
-});
-
-// Initialize on load - show drop zone, don't auto-play test text
+// Initialize on load
 document.addEventListener('DOMContentLoaded', () => {
-  // Ready for file drop
+  const dropZone = document.getElementById('drop-zone');
+
+  console.log('Drop zone element:', dropZone);
+
+  // Prevent default drag behavior on document and allow drops
+  document.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+  });
+
+  document.addEventListener('drop', (e) => {
+    e.preventDefault();
+  });
+
+  document.addEventListener('dragenter', (e) => {
+    e.preventDefault();
+  });
+
+  // Drop zone events
+  dropZone.addEventListener('dragenter', (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+    dropZone.classList.add('dragover');
+    console.log('dragenter');
+  });
+
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+    console.log('dragover');
+  });
+
+  dropZone.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    console.log('dragleave');
+  });
+
+  dropZone.addEventListener('drop', async (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    console.log('drop event fired');
+
+    // Check for dropped file first
+    const file = e.dataTransfer.files[0];
+    console.log('Dropped file:', file);
+    if (file) {
+      await handleDroppedFile(file);
+      return;
+    }
+
+    // Check for dropped text (URL)
+    const text = e.dataTransfer.getData('text/plain');
+    console.log('Dropped text:', text);
+    if (text && await window.fileAPI.isURL(text)) {
+      await handleURL(text);
+    }
+  });
+
+  // Paste handler for URLs
+  document.addEventListener('paste', async (e) => {
+    const text = e.clipboardData.getData('text/plain');
+    console.log('Pasted text:', text);
+    if (text && await window.fileAPI.isURL(text)) {
+      e.preventDefault();
+      await handleURL(text);
+    }
+  });
+
+  console.log('Event listeners attached');
 });

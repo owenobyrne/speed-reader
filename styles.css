@@ -50,29 +50,32 @@ body {
   font-size: 48px;
   color: #fff;
   height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   position: relative;
   width: 100%;
 }
 
-/* Word parts for ORP alignment */
+/* Word parts for ORP alignment - lock ORP to center tick, share baseline via bottom */
+.word-before,
+.orp,
+.word-after {
+  position: absolute;
+  bottom: 5px;
+}
+
 .word-before {
+  right: 50%;
   text-align: right;
 }
 
 .orp {
   color: #ff0000;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .word-after {
+  left: 50%;
   text-align: left;
-}
-
-/* Use a wrapper to position ORP at center */
-.word-display span {
-  display: inline;
 }
 
 /* Drop zone styles */

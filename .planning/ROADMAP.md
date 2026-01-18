@@ -16,7 +16,7 @@ None
 
 - [x] **Phase 1: Foundation** - Electron app scaffold with basic window
 - [x] **Phase 2: Core Reader** - RSVP display with ORP highlighting and visual design
-- [ ] **Phase 3: File Handling** - Drag-drop input, text extraction from PDF/Word/URLs
+- [x] **Phase 3: File Handling** - Drag-drop input, text extraction from PDF/Word/URLs
 - [ ] **Phase 4: Controls & Polish** - Keyboard controls, navigation, speed adjustment, position saving
 
 ## Phase Details
@@ -48,7 +48,7 @@ Plans:
 
 Plans:
 - [x] 03-01: File infrastructure and document parsing
-- [ ] 03-02: Web URL text extraction
+- [x] 03-02: Web URL text extraction
 
 ### Phase 4: Controls & Polish
 **Goal**: Full keyboard control, speed adjustment, navigation, and position persistence
@@ -69,5 +69,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Foundation | 1/1 | Complete | 2026-01-18 |
 | 2. Core Reader | 1/1 | Complete | 2026-01-18 |
-| 3. File Handling | 1/2 | In progress | - |
+| 3. File Handling | 2/2 | Complete | 2026-01-18 |
 | 4. Controls & Polish | 0/2 | Not started | - |
