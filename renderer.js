@@ -74,12 +74,45 @@ function splitIntoWords(text) {
 }
 
 /**
- * Calculate delay between words in milliseconds.
+ * Calculate base delay between words in milliseconds.
  * @param {number} wpm - Words per minute
  * @returns {number} - Delay in milliseconds
  */
 function calculateDelay(wpm) {
   return 60000 / wpm;
+}
+
+/**
+ * Calculate variable delay for a specific word based on length and punctuation.
+ * Longer words and words ending with punctuation get extra display time.
+ * @param {string} word - The word to calculate delay for
+ * @param {number} baseDelay - Base delay from WPM setting
+ * @returns {number} - Adjusted delay in milliseconds
+ */
+function calculateWordDelay(word, baseDelay) {
+  if (!word || word.length === 0) return baseDelay;
+
+  // Length adjustment: add 15% per character above 6 chars
+  const extraChars = Math.max(0, word.length - 6);
+  const lengthMultiplier = 1 + (extraChars * 0.15);
+
+  // Punctuation bonus: check word ending
+  let punctuationBonus = 0;
+  const lastChar = word.charAt(word.length - 1);
+
+  if ('.!?'.includes(lastChar)) {
+    // Sentence-ending punctuation: 50% bonus
+    punctuationBonus = 0.5;
+  } else if (',;:'.includes(lastChar)) {
+    // Pause punctuation: 25% bonus
+    punctuationBonus = 0.25;
+  }
+
+  // Calculate final delay
+  let delay = baseDelay * lengthMultiplier + baseDelay * punctuationBonus;
+
+  // Cap at 3x base delay to prevent extreme pauses
+  return Math.min(delay, baseDelay * 3);
 }
 
 /**
