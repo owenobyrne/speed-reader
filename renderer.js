@@ -448,12 +448,17 @@ function loadText(text) {
 }
 
 /**
- * Show loading state in word display.
+ * Show loading state in word display with animated spinner.
  * @param {string} message - Loading message to show
  */
 function showLoading(message) {
   const display = document.getElementById('word-display');
-  display.innerHTML = `<span style="color: rgba(255,255,255,0.5); font-size: 24px;">${message}</span>`;
+  display.innerHTML = `
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">${message}</div>
+    </div>
+  `;
 }
 
 /**
@@ -506,6 +511,10 @@ async function handleDroppedFile(file) {
 
   const ext = await window.fileAPI.getExtension(filePath);
 
+  // Show loading indicator (libraries may take time to load on first use)
+  const filename = filePath.split(/[/\\]/).pop();
+  showLoading(`Loading ${filename}...`);
+
   try {
     let text;
 
@@ -520,17 +529,18 @@ async function handleDroppedFile(file) {
         text = await window.fileAPI.readTextFile(filePath);
         break;
       default:
+        document.getElementById('word-display').innerHTML = '';
         alert(`Unsupported file format: ${ext}\nSupported formats: .pdf, .docx, .txt`);
         return;
     }
 
     if (!text || text.trim().length === 0) {
+      document.getElementById('word-display').innerHTML = '';
       alert('No text found in document. The file may be empty or contain only images.');
       return;
     }
 
-    // Set sourceId to filename (extract from path) for position persistence
-    const filename = filePath.split(/[/\\]/).pop();
+    // Set sourceId to filename for position persistence
     state.sourceId = filename;
 
     loadText(text);
@@ -545,6 +555,7 @@ async function handleDroppedFile(file) {
     play();
     document.getElementById('drop-zone').classList.add('playing');
   } catch (error) {
+    document.getElementById('word-display').innerHTML = '';
     alert(`Error reading file: ${error.message}`);
   }
 }
