@@ -15,7 +15,9 @@ const state = {
   // Navigation state for quick-tap detection
   lastNavTime: 0,           // Timestamp of last navigation
   lastNavBoundaryIdx: -1,   // Boundary index we last jumped to
-  navTapThreshold: 500      // ms threshold for "quick" successive taps
+  navTapThreshold: 500,     // ms threshold for "quick" successive taps
+  // Timing mode: 0=pure WPM, 1=punctuation-only, 2=length+punctuation
+  timingMode: 2
 };
 
 // Test text
@@ -84,7 +86,7 @@ function calculateDelay(wpm) {
 
 /**
  * Calculate variable delay for a specific word based on length and punctuation.
- * Longer words and words ending with punctuation get extra display time.
+ * Respects state.timingMode: 0=pure WPM, 1=punctuation-only, 2=length+punctuation
  * @param {string} word - The word to calculate delay for
  * @param {number} baseDelay - Base delay from WPM setting
  * @returns {number} - Adjusted delay in milliseconds
@@ -92,11 +94,19 @@ function calculateDelay(wpm) {
 function calculateWordDelay(word, baseDelay) {
   if (!word || word.length === 0) return baseDelay;
 
-  // Length adjustment: add 15% per character above 6 chars
-  const extraChars = Math.max(0, word.length - 6);
-  const lengthMultiplier = 1 + (extraChars * 0.15);
+  // Mode 0: Pure WPM - no adjustments
+  if (state.timingMode === 0) {
+    return baseDelay;
+  }
 
-  // Punctuation bonus: check word ending
+  // Length adjustment: add 15% per character above 6 chars (mode 2 only)
+  let lengthMultiplier = 1;
+  if (state.timingMode === 2) {
+    const extraChars = Math.max(0, word.length - 6);
+    lengthMultiplier = 1 + (extraChars * 0.15);
+  }
+
+  // Punctuation bonus: check word ending (modes 1 and 2)
   let punctuationBonus = 0;
   const lastChar = word.charAt(word.length - 1);
 
@@ -316,6 +326,15 @@ function setFontSize(size) {
   // Scale container height proportionally (1.25x font size)
   display.style.height = `${state.fontSize * 1.25}px`;
   showIndicator(`${state.fontSize}px`);
+}
+
+/**
+ * Cycle through timing modes: pure WPM -> punctuation-only -> length+punctuation
+ */
+function cycleTimingMode() {
+  const modeNames = ['Pure WPM', 'Punctuation', 'Length+Punct'];
+  state.timingMode = (state.timingMode + 1) % 3;
+  showIndicator(modeNames[state.timingMode]);
 }
 
 /**
@@ -663,6 +682,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           jumpForwardSentence();
         }
+        break;
+      case 'KeyP':
+        e.preventDefault();
+        cycleTimingMode();
         break;
     }
   });
