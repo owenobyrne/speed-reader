@@ -37,10 +37,11 @@ npm start
 | `Space` | Play/Pause |
 | `↑` / `↓` | Increase/Decrease speed (50 WPM) |
 | `←` / `→` | Jump back/forward one sentence |
-| `Shift + ←` / `→` | Jump back/forward one paragraph |
-| `[` / `]` | Decrease/Increase font size |
+| `Ctrl/Cmd + ←` / `→` | Jump back/forward one paragraph |
+| `+` / `-` | Increase/Decrease font size |
 | `F` | Cycle through fonts |
-| `R` | Restart from beginning |
+| `P` | Cycle timing mode (fixed/variable) |
+| `C` | Toggle context words |
 
 ## How It Works
 
