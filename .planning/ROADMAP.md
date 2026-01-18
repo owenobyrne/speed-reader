@@ -28,15 +28,15 @@ Build a cross-platform RSVP reader from scratch: scaffold the Electron app, impl
 
 **Milestone Goal:** Enhanced reading experience with intelligent timing, font options, and visual refinements.
 
-#### Phase 5: Reading Timing
+#### Phase 5: Reading Timing ✓
 
 **Goal**: Intelligent word timing based on punctuation and word length
 **Depends on**: Phase 4 (v1.0 complete)
 **Research**: Unlikely (internal patterns, timing calculations)
-**Plans**: TBD
+**Plans**: 1
 
 Plans:
-- [ ] 05-01: TBD (run /gsd:plan-phase 5 to break down)
+- [x] 05-01: Variable word timing with length/punctuation adjustments
 
 #### Phase 6: Font System
 
@@ -75,6 +75,6 @@ Plans:
 | 2. Core Reader | v1.0 | 1/1 | Complete | 2026-01-18 |
 | 3. File Handling | v1.0 | 2/2 | Complete | 2026-01-18 |
 | 4. Controls & Polish | v1.0 | 2/2 | Complete | 2026-01-18 |
-| 5. Reading Timing | v1.1 | 0/? | Not started | - |
+| 5. Reading Timing | v1.1 | 1/1 | Complete | 2026-01-18 |
 | 6. Font System | v1.1 | 0/? | Not started | - |
 | 7. Visual Polish | v1.1 | 0/? | Not started | - |
