@@ -54,7 +54,6 @@ Plans:
 **Goal**: Full keyboard control, speed adjustment, navigation, and position persistence
 **Depends on**: Phase 3
 **Research**: Unlikely (standard Electron patterns)
-**Plans**: TBD
 
 Plans:
 - [ ] 04-01: Keyboard shortcuts (speed, pause/play, font size)
