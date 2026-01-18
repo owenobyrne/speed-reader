@@ -17,7 +17,10 @@ const state = {
   lastNavBoundaryIdx: -1,   // Boundary index we last jumped to
   navTapThreshold: 500,     // ms threshold for "quick" successive taps
   // Timing mode: 0=pure WPM, 1=punctuation-only, 2=length+punctuation
-  timingMode: 2
+  timingMode: 2,
+  // Font options
+  fonts: ['Times New Roman', 'Tinos', 'EB Garamond', 'Merriweather', 'Libre Baskerville', 'Spectral'],
+  currentFontIndex: 0
 };
 
 // Test text
@@ -338,6 +341,37 @@ function cycleTimingMode() {
 }
 
 /**
+ * Set font by index and apply to display.
+ * @param {number} index - Index into state.fonts array
+ */
+function setFont(index) {
+  state.currentFontIndex = index;
+  const fontName = state.fonts[index];
+  const fontFamily = `'${fontName}', serif`;
+
+  // Apply to body and word display
+  document.body.style.fontFamily = fontFamily;
+  document.getElementById('word-display').style.fontFamily = fontFamily;
+
+  showIndicator(fontName);
+
+  // Save preference to localStorage
+  try {
+    localStorage.setItem('speed-reader-font', index.toString());
+  } catch (e) {
+    console.warn('Could not save font preference:', e);
+  }
+}
+
+/**
+ * Cycle to next font in the fonts array.
+ */
+function cycleFont() {
+  const nextIndex = (state.currentFontIndex + 1) % state.fonts.length;
+  setFont(nextIndex);
+}
+
+/**
  * Show a brief indicator message at bottom of screen.
  * @param {string} message - Message to display
  */
@@ -634,6 +668,24 @@ document.addEventListener('DOMContentLoaded', () => {
     bottomGuideLine.appendChild(progressFill);
   }
 
+  // Restore font preference from localStorage
+  try {
+    const savedFont = localStorage.getItem('speed-reader-font');
+    if (savedFont !== null) {
+      const fontIndex = parseInt(savedFont, 10);
+      if (fontIndex >= 0 && fontIndex < state.fonts.length) {
+        // Apply font without showing indicator on load
+        state.currentFontIndex = fontIndex;
+        const fontName = state.fonts[fontIndex];
+        const fontFamily = `'${fontName}', serif`;
+        document.body.style.fontFamily = fontFamily;
+        document.getElementById('word-display').style.fontFamily = fontFamily;
+      }
+    }
+  } catch (e) {
+    console.warn('Could not restore font preference:', e);
+  }
+
   // Keyboard controls
   document.addEventListener('keydown', (e) => {
     switch (e.code) {
@@ -686,6 +738,10 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'KeyP':
         e.preventDefault();
         cycleTimingMode();
+        break;
+      case 'KeyF':
+        e.preventDefault();
+        cycleFont();
         break;
     }
   });
