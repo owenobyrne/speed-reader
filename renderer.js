@@ -11,7 +11,11 @@ const state = {
   sourceText: '',           // Original full text for boundary detection
   sourceId: '',             // Identifier for position saving (filename or URL)
   sentenceStarts: [],       // Word indices where sentences begin
-  paragraphStarts: []       // Word indices where paragraphs begin
+  paragraphStarts: [],      // Word indices where paragraphs begin
+  // Navigation state for quick-tap detection
+  lastNavTime: 0,           // Timestamp of last navigation
+  lastNavBoundaryIdx: -1,   // Boundary index we last jumped to
+  navTapThreshold: 500      // ms threshold for "quick" successive taps
 };
 
 // Test text
@@ -167,49 +171,78 @@ function findCurrentBoundaryIndex(starts) {
 }
 
 /**
+ * Navigate backward through boundaries with quick-tap support.
+ * - Single tap (or after delay): go to start of current boundary
+ * - Quick successive taps: go back one more each time
+ * @param {number[]} starts - Array of boundary word indices
+ * @param {string} type - 'sentence' or 'paragraph' for tracking
+ */
+function navigateBack(starts, type) {
+  if (state.words.length === 0 || starts.length === 0) return;
+
+  const now = Date.now();
+  const isQuickTap = (now - state.lastNavTime) < state.navTapThreshold;
+  const currentBoundaryIdx = findCurrentBoundaryIndex(starts);
+
+  let targetIdx;
+  if (isQuickTap && state.lastNavBoundaryIdx >= 0) {
+    // Quick tap: go back one more from where we last jumped
+    targetIdx = Math.max(0, state.lastNavBoundaryIdx - 1);
+  } else {
+    // First tap or after delay: go to start of current boundary
+    targetIdx = currentBoundaryIdx;
+  }
+
+  state.lastNavTime = now;
+  state.lastNavBoundaryIdx = targetIdx;
+  jumpToIndex(starts[targetIdx]);
+}
+
+/**
+ * Navigate forward through boundaries.
+ * @param {number[]} starts - Array of boundary word indices
+ */
+function navigateForward(starts) {
+  if (state.words.length === 0 || starts.length === 0) return;
+
+  const currentIdx = findCurrentBoundaryIndex(starts);
+  const targetIdx = Math.min(starts.length - 1, currentIdx + 1);
+
+  // Reset quick-tap state on forward navigation
+  state.lastNavTime = 0;
+  state.lastNavBoundaryIdx = -1;
+
+  jumpToIndex(starts[targetIdx]);
+}
+
+/**
  * Jump back to previous sentence start.
- * Each press goes to a different earlier sentence.
+ * Single tap: restart current sentence. Quick taps: go back further.
  */
 function jumpBackSentence() {
-  if (state.words.length === 0 || state.sentenceStarts.length === 0) return;
-
-  const currentIdx = findCurrentBoundaryIndex(state.sentenceStarts);
-  const targetIdx = Math.max(0, currentIdx - 1);
-  jumpToIndex(state.sentenceStarts[targetIdx]);
+  navigateBack(state.sentenceStarts, 'sentence');
 }
 
 /**
  * Jump forward to next sentence start.
  */
 function jumpForwardSentence() {
-  if (state.words.length === 0 || state.sentenceStarts.length === 0) return;
-
-  const currentIdx = findCurrentBoundaryIndex(state.sentenceStarts);
-  const targetIdx = Math.min(state.sentenceStarts.length - 1, currentIdx + 1);
-  jumpToIndex(state.sentenceStarts[targetIdx]);
+  navigateForward(state.sentenceStarts);
 }
 
 /**
  * Jump back to previous paragraph start.
- * Each press goes to a different earlier paragraph.
+ * Single tap: restart current paragraph. Quick taps: go back further.
  */
 function jumpBackParagraph() {
-  if (state.words.length === 0 || state.paragraphStarts.length === 0) return;
-
-  const currentIdx = findCurrentBoundaryIndex(state.paragraphStarts);
-  const targetIdx = Math.max(0, currentIdx - 1);
-  jumpToIndex(state.paragraphStarts[targetIdx]);
+  navigateBack(state.paragraphStarts, 'paragraph');
 }
 
 /**
  * Jump forward to next paragraph start.
  */
 function jumpForwardParagraph() {
-  if (state.words.length === 0 || state.paragraphStarts.length === 0) return;
-
-  const currentIdx = findCurrentBoundaryIndex(state.paragraphStarts);
-  const targetIdx = Math.min(state.paragraphStarts.length - 1, currentIdx + 1);
-  jumpToIndex(state.paragraphStarts[targetIdx]);
+  navigateForward(state.paragraphStarts);
 }
 
 /**
