@@ -75,6 +75,17 @@ function calculateDelay(wpm) {
 }
 
 /**
+ * Update progress bar to reflect current position.
+ */
+function updateProgress() {
+  const progressFill = document.getElementById('progress-fill');
+  if (!progressFill || state.words.length === 0) return;
+
+  const progress = (state.currentIndex / state.words.length) * 100;
+  progressFill.style.width = `${progress}%`;
+}
+
+/**
  * Advance to next word and display it.
  */
 function advanceWord() {
@@ -82,6 +93,7 @@ function advanceWord() {
 
   displayWord(state.words[state.currentIndex]);
   state.currentIndex++;
+  updateProgress();
 
   // Loop back to start when finished
   if (state.currentIndex >= state.words.length) {
@@ -180,6 +192,7 @@ function showIndicator(message) {
 function loadText(text) {
   state.words = splitIntoWords(text);
   state.currentIndex = 0;
+  updateProgress(); // Reset progress bar
 }
 
 /**
@@ -266,6 +279,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const dropZone = document.getElementById('drop-zone');
 
   console.log('Drop zone element:', dropZone);
+
+  // Create progress bar inside bottom guide line
+  const bottomGuideLine = document.querySelector('.guide-line.bottom');
+  if (bottomGuideLine) {
+    const progressFill = document.createElement('span');
+    progressFill.id = 'progress-fill';
+    bottomGuideLine.appendChild(progressFill);
+  }
 
   // Keyboard controls
   document.addEventListener('keydown', (e) => {
