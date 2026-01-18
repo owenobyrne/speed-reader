@@ -106,9 +106,10 @@ function advanceWord() {
   state.currentIndex++;
   updateProgress();
 
-  // Loop back to start when finished
+  // Stop at end instead of looping
   if (state.currentIndex >= state.words.length) {
-    state.currentIndex = 0;
+    state.currentIndex = state.words.length - 1;
+    pause();
   }
 }
 
