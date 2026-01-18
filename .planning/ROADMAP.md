@@ -7,7 +7,7 @@ Build a cross-platform RSVP reader from scratch: scaffold the Electron app, impl
 ## Milestones
 
 - ✅ [v1.0 MVP](milestones/v1.0-ROADMAP.md) — Phases 1-4 (shipped 2026-01-18)
-- ✅ **v1.1 Polish** — Phases 5-7 (complete)
+- ✅ [v1.1 Polish](milestones/v1.1-ROADMAP.md) — Phases 5-7 (shipped 2026-01-18)
 
 ## Completed Milestones
 
@@ -24,47 +24,17 @@ Build a cross-platform RSVP reader from scratch: scaffold the Electron app, impl
 
 </details>
 
-### ✅ v1.1 Polish (Complete)
+<details>
+<summary>✅ v1.1 Polish (Phases 5-7) — SHIPPED 2026-01-18</summary>
 
-**Milestone Goal:** Enhanced reading experience with intelligent timing, font options, and visual refinements.
+- [x] **Phase 5: Reading Timing** — Variable word timing with length/punctuation adjustments
+- [x] **Phase 6: Font System** — 6 serif fonts with 'f' key cycling and persistence
+- [x] **Phase 7: Visual Polish** — Smooth transitions and ORP baseline alignment
 
-#### Phase 5: Reading Timing ✓
+**Plans completed:** 3 total
+**Details:** See [milestones/v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md)
 
-**Goal**: Intelligent word timing based on punctuation and word length
-**Depends on**: Phase 4 (v1.0 complete)
-**Research**: Unlikely (internal patterns, timing calculations)
-**Plans**: 1
-
-Plans:
-- [x] 05-01: Variable word timing with length/punctuation adjustments
-
-#### Phase 6: Font System ✓
-
-**Goal**: Google Fonts integration with "f" key cycling through font options
-**Depends on**: Phase 5
-**Research**: None needed (bundled locally)
-**Plans**: 1
-
-Fonts supported:
-- Times New Roman (default, local)
-- Tinos (Google Font)
-- EB Garamond (Google Font)
-- Merriweather (Google Font)
-- Libre Baskerville (Google Font)
-- Spectral (Google Font)
-
-Plans:
-- [x] 06-01: Bundle Google Fonts locally, implement font cycling with persistence
-
-#### Phase 7: Visual Polish ✓
-
-**Goal**: Smoother transitions and ORP baseline alignment fix
-**Depends on**: Phase 6
-**Research**: None needed
-**Plans**: 1
-
-Plans:
-- [x] 07-01: Smooth word transitions, ORP baseline alignment fix
+</details>
 
 ## Progress
 

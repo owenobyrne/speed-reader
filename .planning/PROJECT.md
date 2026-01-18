@@ -22,10 +22,14 @@ The reading experience must be smooth, comfortable, and visually refined — wor
 - Adjustable word/font size — v1.0
 - Save and resume reading position per document — v1.0
 - Full keyboard control for all features — v1.0
+- Variable word timing (length/punctuation adjustments) — v1.1
+- Multiple font options with keyboard cycling — v1.1
+- Smooth word transitions — v1.1
+- Preference persistence (WPM, font, font size) — v1.1
 
 ### Active
 
-(None — all v1.0 requirements validated)
+(None — all v1.1 requirements validated)
 
 ### Out of Scope
 
@@ -35,10 +39,11 @@ The reading experience must be smooth, comfortable, and visually refined — wor
 
 ## Context
 
-**Current State (v1.0 shipped):**
-- ~2,750 lines of JavaScript/CSS/HTML
+**Current State (v1.1 shipped):**
+- ~1,272 lines of JavaScript/CSS/HTML (core app files)
 - Tech stack: Electron 40, pdf-parse, mammoth.js, Readability
-- 4 phases, 6 plans completed in single day
+- 7 phases, 9 plans completed in single day
+- 6 bundled serif fonts (~142KB)
 
 RSVP reading works by presenting words sequentially at a fixed point, eliminating eye movement. The "optimal recognition point" (ORP) is typically slightly left of center — highlighting this letter in red helps the brain process words faster. The tick marks on the guide lines help anchor visual focus.
 
@@ -64,6 +69,10 @@ Key UX considerations:
 | IPC architecture for parsing | Security with contextIsolation | Good |
 | Lazy-load heavy dependencies | Fast startup (~instant vs 10s) | Good |
 | Quick-tap navigation (500ms) | Media player style UX | Good |
+| setTimeout chaining for timing | Enables per-word variable delay | Good |
+| Bundle fonts locally (woff2) | Offline support, no CDN dependency | Good |
+| 50ms word transitions | Smooth without interfering with high WPM | Good |
+| Wrapper-based ORP layout | Natural baseline alignment across fonts | Good |
 
 ---
-*Last updated: 2026-01-18 after v1.0 milestone*
+*Last updated: 2026-01-18 after v1.1 milestone*
