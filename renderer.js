@@ -20,14 +20,14 @@ const state = {
   timingMode: 2,
   // Font options with per-font adjustments to normalize visual size and alignment
   // scale: compensates for different x-heights across fonts
-  // offset: vertical adjustment in em units (from font metrics analysis)
+  // offset: vertical adjustment in em units (positive = down, from font metrics)
   fonts: [
     { name: 'Times New Roman', scale: 1.0, offset: 0 },
     { name: 'Tinos', scale: 1.0, offset: 0 },                    // Reference font
-    { name: 'EB Garamond', scale: 1.12, offset: -0.116 },        // asc 1007 vs 891
-    { name: 'Merriweather', scale: 0.92, offset: -0.093 },       // asc 984 vs 891
-    { name: 'Libre Baskerville', scale: 0.95, offset: -0.079 },  // asc 970 vs 891
-    { name: 'Spectral', scale: 1.02, offset: -0.168 }            // asc 1059 vs 891
+    { name: 'EB Garamond', scale: 1.12, offset: 0.116 },         // asc 1007 vs 891
+    { name: 'Merriweather', scale: 0.92, offset: 0.093 },        // asc 984 vs 891
+    { name: 'Libre Baskerville', scale: 0.95, offset: 0.079 },   // asc 970 vs 891
+    { name: 'Spectral', scale: 1.02, offset: 0.168 }             // asc 1059 vs 891
   ],
   currentFontIndex: 0
 };
