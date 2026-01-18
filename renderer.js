@@ -7,7 +7,11 @@ const state = {
   isPlaying: false,
   wpm: 300,
   intervalId: null,
-  fontSize: 48
+  fontSize: 48,
+  sourceText: '',           // Original full text for boundary detection
+  sourceId: '',             // Identifier for position saving (filename or URL)
+  sentenceStarts: [],       // Word indices where sentences begin
+  paragraphStarts: []       // Word indices where paragraphs begin
 };
 
 // Test text
@@ -130,6 +134,96 @@ function pause() {
 }
 
 /**
+ * Jump to a specific word index and display it.
+ * @param {number} index - Target word index
+ */
+function jumpToIndex(index) {
+  if (state.words.length === 0) return;
+
+  // Pause if currently playing
+  if (state.isPlaying) {
+    pause();
+  }
+
+  // Clamp index to valid range
+  state.currentIndex = Math.max(0, Math.min(index, state.words.length - 1));
+  displayWord(state.words[state.currentIndex]);
+  updateProgress();
+}
+
+/**
+ * Jump back to previous sentence start.
+ */
+function jumpBackSentence() {
+  if (state.words.length === 0 || state.sentenceStarts.length === 0) return;
+
+  // Find the highest sentence start that is less than current index
+  let targetIndex = 0;
+  for (let i = state.sentenceStarts.length - 1; i >= 0; i--) {
+    if (state.sentenceStarts[i] < state.currentIndex) {
+      targetIndex = state.sentenceStarts[i];
+      break;
+    }
+  }
+
+  jumpToIndex(targetIndex);
+}
+
+/**
+ * Jump forward to next sentence start.
+ */
+function jumpForwardSentence() {
+  if (state.words.length === 0 || state.sentenceStarts.length === 0) return;
+
+  // Find the lowest sentence start that is greater than current index
+  let targetIndex = state.words.length - 1;
+  for (let i = 0; i < state.sentenceStarts.length; i++) {
+    if (state.sentenceStarts[i] > state.currentIndex) {
+      targetIndex = state.sentenceStarts[i];
+      break;
+    }
+  }
+
+  jumpToIndex(targetIndex);
+}
+
+/**
+ * Jump back to previous paragraph start.
+ */
+function jumpBackParagraph() {
+  if (state.words.length === 0 || state.paragraphStarts.length === 0) return;
+
+  // Find the highest paragraph start that is less than current index
+  let targetIndex = 0;
+  for (let i = state.paragraphStarts.length - 1; i >= 0; i--) {
+    if (state.paragraphStarts[i] < state.currentIndex) {
+      targetIndex = state.paragraphStarts[i];
+      break;
+    }
+  }
+
+  jumpToIndex(targetIndex);
+}
+
+/**
+ * Jump forward to next paragraph start.
+ */
+function jumpForwardParagraph() {
+  if (state.words.length === 0 || state.paragraphStarts.length === 0) return;
+
+  // Find the lowest paragraph start that is greater than current index
+  let targetIndex = state.words.length - 1;
+  for (let i = 0; i < state.paragraphStarts.length; i++) {
+    if (state.paragraphStarts[i] > state.currentIndex) {
+      targetIndex = state.paragraphStarts[i];
+      break;
+    }
+  }
+
+  jumpToIndex(targetIndex);
+}
+
+/**
  * Set playback speed (WPM).
  * @param {number} wpm - Words per minute (clamped to 100-1000)
  */
@@ -186,12 +280,77 @@ function showIndicator(message) {
 }
 
 /**
+ * Compute sentence and paragraph boundaries from source text.
+ * Sentence starts: indices where a new sentence begins (after . ! ?)
+ * Paragraph starts: indices where a new paragraph begins (after double newline)
+ * @param {string} text - Original source text
+ * @param {string[]} words - Array of words extracted from text
+ */
+function computeBoundaries(text, words) {
+  const sentenceStarts = [0]; // First word is always a sentence start
+  const paragraphStarts = [0]; // First word is always a paragraph start
+
+  // Track character position in original text as we process words
+  let charPos = 0;
+
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+
+    // Find this word in text starting from current position
+    const wordStart = text.indexOf(word, charPos);
+    if (wordStart === -1) {
+      charPos += word.length;
+      continue;
+    }
+
+    // Check what's between the last position and this word
+    const gap = text.substring(charPos, wordStart);
+
+    // Check for paragraph break (double newline in gap)
+    if (i > 0 && /\n\s*\n/.test(gap)) {
+      if (!paragraphStarts.includes(i)) {
+        paragraphStarts.push(i);
+      }
+      // Paragraph start is also a sentence start
+      if (!sentenceStarts.includes(i)) {
+        sentenceStarts.push(i);
+      }
+    }
+
+    // Check if previous word ended with sentence-ending punctuation
+    if (i > 0) {
+      const prevWord = words[i - 1];
+      if (/[.!?]["']?$/.test(prevWord)) {
+        if (!sentenceStarts.includes(i)) {
+          sentenceStarts.push(i);
+        }
+      }
+    }
+
+    charPos = wordStart + word.length;
+  }
+
+  // Sort the arrays to ensure they're in order
+  sentenceStarts.sort((a, b) => a - b);
+  paragraphStarts.sort((a, b) => a - b);
+
+  return { sentenceStarts, paragraphStarts };
+}
+
+/**
  * Load text and prepare for playback.
  * @param {string} text - Text to load
  */
 function loadText(text) {
+  state.sourceText = text;
   state.words = splitIntoWords(text);
   state.currentIndex = 0;
+
+  // Compute sentence and paragraph boundaries
+  const boundaries = computeBoundaries(text, state.words);
+  state.sentenceStarts = boundaries.sentenceStarts;
+  state.paragraphStarts = boundaries.paragraphStarts;
+
   updateProgress(); // Reset progress bar
 }
 
@@ -316,6 +475,22 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'NumpadSubtract':
         e.preventDefault();
         setFontSize(state.fontSize - 8);
+        break;
+      case 'ArrowLeft':
+        e.preventDefault();
+        if (e.ctrlKey || e.metaKey) {
+          jumpBackParagraph();
+        } else {
+          jumpBackSentence();
+        }
+        break;
+      case 'ArrowRight':
+        e.preventDefault();
+        if (e.ctrlKey || e.metaKey) {
+          jumpForwardParagraph();
+        } else {
+          jumpForwardSentence();
+        }
         break;
     }
   });
