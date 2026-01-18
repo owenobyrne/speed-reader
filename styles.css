@@ -146,6 +146,38 @@ body {
   text-align: left;
 }
 
+/* Context words - previous and next words shown dimly */
+.context-container {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  width: 100%;
+  gap: 0;
+}
+
+.context-words {
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 0.6em;
+  white-space: nowrap;
+  min-width: 120px;
+}
+
+.context-words.prev {
+  text-align: right;
+  padding-right: 20px;
+}
+
+.context-words.next {
+  text-align: left;
+  padding-left: 20px;
+}
+
+.main-word-container {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+}
+
 /* Drop zone styles */
 #drop-zone {
   width: 100%;

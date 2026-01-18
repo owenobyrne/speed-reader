@@ -29,7 +29,10 @@ const state = {
     { name: 'Libre Baskerville', scale: 0.95, offset: 0.079 },   // asc 970 vs 891
     { name: 'Spectral', scale: 1.02, offset: 0.168 }             // asc 1059 vs 891
   ],
-  currentFontIndex: 0
+  currentFontIndex: 0,
+  // Context words: show previous/next words dimly for parafoveal preview
+  showContext: true,
+  contextWordCount: 2  // Number of words to show on each side
 };
 
 // Test text
@@ -49,6 +52,35 @@ function calculateORP(word) {
 }
 
 /**
+ * Get context words (previous and next) for the current position.
+ * @param {number} index - Current word index
+ * @returns {object} - { prev: string[], next: string[] }
+ */
+function getContextWords(index) {
+  const count = state.contextWordCount;
+  const prev = [];
+  const next = [];
+
+  // Get previous words
+  for (let i = count; i >= 1; i--) {
+    const idx = index - i;
+    if (idx >= 0 && idx < state.words.length) {
+      prev.push(state.words[idx]);
+    }
+  }
+
+  // Get next words
+  for (let i = 1; i <= count; i++) {
+    const idx = index + i;
+    if (idx >= 0 && idx < state.words.length) {
+      next.push(state.words[idx]);
+    }
+  }
+
+  return { prev, next };
+}
+
+/**
  * Render a word with ORP highlighting in the display element.
  * @param {string} word - The word to display
  */
@@ -64,13 +96,31 @@ function displayWord(word) {
   const orp = word.charAt(orpIndex);
   const after = word.substring(orpIndex + 1);
 
+  // Build the main word HTML
+  const mainWordHtml = `<span class="word-wrapper"><span class="word-before">${before}</span><span class="orp">${orp}</span><span class="word-after">${after}</span></span>`;
+
+  // Build context words HTML if enabled
+  let html;
+  if (state.showContext) {
+    const context = getContextWords(state.currentIndex);
+    const prevText = context.prev.join(' ');
+    const nextText = context.next.join(' ');
+
+    html = `<div class="context-container">
+      <span class="context-words prev">${prevText}</span>
+      <span class="main-word-container">${mainWordHtml}</span>
+      <span class="context-words next">${nextText}</span>
+    </div>`;
+  } else {
+    html = mainWordHtml;
+  }
+
   // Fade out before changing content
   display.style.opacity = '0';
 
   // Use requestAnimationFrame to ensure opacity change is applied before content swap
   requestAnimationFrame(() => {
-    // Use wrapper structure: before and after positioned relative to ORP
-    display.innerHTML = `<span class="word-wrapper"><span class="word-before">${before}</span><span class="orp">${orp}</span><span class="word-after">${after}</span></span>`;
+    display.innerHTML = html;
 
     // Fade back in
     requestAnimationFrame(() => {
@@ -410,6 +460,26 @@ function setFont(index) {
 function cycleFont() {
   const nextIndex = (state.currentFontIndex + 1) % state.fonts.length;
   setFont(nextIndex);
+}
+
+/**
+ * Toggle context words display on/off.
+ */
+function toggleContext() {
+  state.showContext = !state.showContext;
+  showIndicator(state.showContext ? 'Context On' : 'Context Off');
+
+  // Save preference to localStorage
+  try {
+    localStorage.setItem('speed-reader-context', state.showContext.toString());
+  } catch (e) {
+    console.warn('Could not save context preference:', e);
+  }
+
+  // Re-render current word to show/hide context
+  if (state.words.length > 0 && state.currentIndex < state.words.length) {
+    displayWord(state.words[state.currentIndex]);
+  }
 }
 
 /**
@@ -762,6 +832,16 @@ document.addEventListener('DOMContentLoaded', () => {
     console.warn('Could not restore WPM preference:', e);
   }
 
+  // Restore context preference from localStorage
+  try {
+    const savedContext = localStorage.getItem('speed-reader-context');
+    if (savedContext !== null) {
+      state.showContext = savedContext === 'true';
+    }
+  } catch (e) {
+    console.warn('Could not restore context preference:', e);
+  }
+
   // Keyboard controls
   document.addEventListener('keydown', (e) => {
     switch (e.code) {
@@ -818,6 +898,10 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'KeyF':
         e.preventDefault();
         cycleFont();
+        break;
+      case 'KeyC':
+        e.preventDefault();
+        toggleContext();
         break;
     }
   });
