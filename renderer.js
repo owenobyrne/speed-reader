@@ -18,15 +18,16 @@ const state = {
   navTapThreshold: 500,     // ms threshold for "quick" successive taps
   // Timing mode: 0=pure WPM, 1=punctuation-only, 2=length+punctuation
   timingMode: 2,
-  // Font options with per-font scale factors to normalize visual size
-  // Scale factors compensate for different x-heights/metrics across fonts
+  // Font options with per-font adjustments to normalize visual size and alignment
+  // scale: compensates for different x-heights across fonts
+  // offset: vertical adjustment in em units (from font metrics analysis)
   fonts: [
-    { name: 'Times New Roman', scale: 1.0 },
-    { name: 'Tinos', scale: 1.0 },
-    { name: 'EB Garamond', scale: 1.12 },      // Smaller x-height, scale up
-    { name: 'Merriweather', scale: 0.92 },     // Larger x-height, scale down
-    { name: 'Libre Baskerville', scale: 0.95 },
-    { name: 'Spectral', scale: 1.02 }
+    { name: 'Times New Roman', scale: 1.0, offset: 0 },
+    { name: 'Tinos', scale: 1.0, offset: 0 },                    // Reference font
+    { name: 'EB Garamond', scale: 1.12, offset: -0.116 },        // asc 1007 vs 891
+    { name: 'Merriweather', scale: 0.92, offset: -0.093 },       // asc 984 vs 891
+    { name: 'Libre Baskerville', scale: 0.95, offset: -0.079 },  // asc 970 vs 891
+    { name: 'Spectral', scale: 1.02, offset: -0.168 }            // asc 1059 vs 891
   ],
   currentFontIndex: 0
 };
@@ -354,7 +355,7 @@ function cycleTimingMode() {
 }
 
 /**
- * Set font by index and apply to display with per-font scaling.
+ * Set font by index and apply to display with per-font scaling and offset.
  * @param {number} index - Index into state.fonts array
  */
 function setFont(index) {
@@ -370,6 +371,9 @@ function setFont(index) {
   // Apply per-font scaling to normalize visual size with guide lines
   const scaledSize = Math.round(state.fontSize * font.scale);
   display.style.fontSize = `${scaledSize}px`;
+
+  // Apply vertical offset to align baselines (derived from font metrics)
+  display.style.transform = font.offset ? `translateY(${font.offset}em)` : 'none';
 
   showIndicator(font.name);
 
@@ -702,6 +706,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Apply per-font scaling
         const scaledSize = Math.round(state.fontSize * font.scale);
         display.style.fontSize = `${scaledSize}px`;
+        // Apply vertical offset
+        display.style.transform = font.offset ? `translateY(${font.offset}em)` : 'none';
       }
     }
   } catch (e) {
