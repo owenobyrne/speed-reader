@@ -109,29 +109,40 @@ body {
   position: relative;
   width: 100%;
   transition: opacity 0.05s ease-out;
+  /* Flexbox for vertical centering of the word wrapper */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* Word parts for ORP alignment - lock ORP to center tick, share baseline via bottom */
+/* Inner wrapper to hold word parts - uses relative positioning */
+.word-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+}
+
+/* Word parts share natural baseline as inline elements */
 .word-before,
 .orp,
 .word-after {
-  position: absolute;
-  bottom: 5px;
+  display: inline;
+  white-space: pre;
 }
 
 .word-before {
-  right: 50%;
+  position: absolute;
+  right: 100%;
   text-align: right;
 }
 
 .orp {
   color: #ff0000;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .word-after {
-  left: 50%;
+  position: absolute;
+  left: 100%;
   text-align: left;
 }
 

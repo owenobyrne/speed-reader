@@ -69,18 +69,8 @@ function displayWord(word) {
 
   // Use requestAnimationFrame to ensure opacity change is applied before content swap
   requestAnimationFrame(() => {
-    display.innerHTML = `<span class="word-before">${before}</span><span class="orp">${orp}</span><span class="word-after">${after}</span>`;
-
-    // Measure ORP character width and adjust positioning
-    const orpEl = display.querySelector('.orp');
-    const beforeEl = display.querySelector('.word-before');
-    const afterEl = display.querySelector('.word-after');
-
-    const orpWidth = orpEl.offsetWidth;
-    const halfOrp = orpWidth / 2;
-
-    beforeEl.style.right = `calc(50% + ${halfOrp}px)`;
-    afterEl.style.left = `calc(50% + ${halfOrp}px)`;
+    // Use wrapper structure: before and after positioned relative to ORP
+    display.innerHTML = `<span class="word-wrapper"><span class="word-before">${before}</span><span class="orp">${orp}</span><span class="word-after">${after}</span></span>`;
 
     // Fade back in
     requestAnimationFrame(() => {
