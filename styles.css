@@ -108,6 +108,7 @@ body {
   height: 60px;
   position: relative;
   width: 100%;
+  transition: opacity 0.05s ease-out;
 }
 
 /* Word parts for ORP alignment - lock ORP to center tick, share baseline via bottom */

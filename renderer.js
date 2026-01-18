@@ -64,18 +64,29 @@ function displayWord(word) {
   const orp = word.charAt(orpIndex);
   const after = word.substring(orpIndex + 1);
 
-  display.innerHTML = `<span class="word-before">${before}</span><span class="orp">${orp}</span><span class="word-after">${after}</span>`;
+  // Fade out before changing content
+  display.style.opacity = '0';
 
-  // Measure ORP character width and adjust positioning
-  const orpEl = display.querySelector('.orp');
-  const beforeEl = display.querySelector('.word-before');
-  const afterEl = display.querySelector('.word-after');
+  // Use requestAnimationFrame to ensure opacity change is applied before content swap
+  requestAnimationFrame(() => {
+    display.innerHTML = `<span class="word-before">${before}</span><span class="orp">${orp}</span><span class="word-after">${after}</span>`;
 
-  const orpWidth = orpEl.offsetWidth;
-  const halfOrp = orpWidth / 2;
+    // Measure ORP character width and adjust positioning
+    const orpEl = display.querySelector('.orp');
+    const beforeEl = display.querySelector('.word-before');
+    const afterEl = display.querySelector('.word-after');
 
-  beforeEl.style.right = `calc(50% + ${halfOrp}px)`;
-  afterEl.style.left = `calc(50% + ${halfOrp}px)`;
+    const orpWidth = orpEl.offsetWidth;
+    const halfOrp = orpWidth / 2;
+
+    beforeEl.style.right = `calc(50% + ${halfOrp}px)`;
+    afterEl.style.left = `calc(50% + ${halfOrp}px)`;
+
+    // Fade back in
+    requestAnimationFrame(() => {
+      display.style.opacity = '1';
+    });
+  });
 }
 
 /**
