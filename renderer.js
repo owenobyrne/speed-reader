@@ -153,21 +153,29 @@ function jumpToIndex(index) {
 }
 
 /**
+ * Find which boundary index we're currently at or past.
+ * @param {number[]} starts - Array of boundary word indices
+ * @returns {number} - Index into the starts array
+ */
+function findCurrentBoundaryIndex(starts) {
+  for (let i = starts.length - 1; i >= 0; i--) {
+    if (starts[i] <= state.currentIndex) {
+      return i;
+    }
+  }
+  return 0;
+}
+
+/**
  * Jump back to previous sentence start.
+ * Each press goes to a different earlier sentence.
  */
 function jumpBackSentence() {
   if (state.words.length === 0 || state.sentenceStarts.length === 0) return;
 
-  // Find the highest sentence start that is less than current index
-  let targetIndex = 0;
-  for (let i = state.sentenceStarts.length - 1; i >= 0; i--) {
-    if (state.sentenceStarts[i] < state.currentIndex) {
-      targetIndex = state.sentenceStarts[i];
-      break;
-    }
-  }
-
-  jumpToIndex(targetIndex);
+  const currentIdx = findCurrentBoundaryIndex(state.sentenceStarts);
+  const targetIdx = Math.max(0, currentIdx - 1);
+  jumpToIndex(state.sentenceStarts[targetIdx]);
 }
 
 /**
@@ -176,34 +184,21 @@ function jumpBackSentence() {
 function jumpForwardSentence() {
   if (state.words.length === 0 || state.sentenceStarts.length === 0) return;
 
-  // Find the lowest sentence start that is greater than current index
-  let targetIndex = state.words.length - 1;
-  for (let i = 0; i < state.sentenceStarts.length; i++) {
-    if (state.sentenceStarts[i] > state.currentIndex) {
-      targetIndex = state.sentenceStarts[i];
-      break;
-    }
-  }
-
-  jumpToIndex(targetIndex);
+  const currentIdx = findCurrentBoundaryIndex(state.sentenceStarts);
+  const targetIdx = Math.min(state.sentenceStarts.length - 1, currentIdx + 1);
+  jumpToIndex(state.sentenceStarts[targetIdx]);
 }
 
 /**
  * Jump back to previous paragraph start.
+ * Each press goes to a different earlier paragraph.
  */
 function jumpBackParagraph() {
   if (state.words.length === 0 || state.paragraphStarts.length === 0) return;
 
-  // Find the highest paragraph start that is less than current index
-  let targetIndex = 0;
-  for (let i = state.paragraphStarts.length - 1; i >= 0; i--) {
-    if (state.paragraphStarts[i] < state.currentIndex) {
-      targetIndex = state.paragraphStarts[i];
-      break;
-    }
-  }
-
-  jumpToIndex(targetIndex);
+  const currentIdx = findCurrentBoundaryIndex(state.paragraphStarts);
+  const targetIdx = Math.max(0, currentIdx - 1);
+  jumpToIndex(state.paragraphStarts[targetIdx]);
 }
 
 /**
@@ -212,16 +207,9 @@ function jumpBackParagraph() {
 function jumpForwardParagraph() {
   if (state.words.length === 0 || state.paragraphStarts.length === 0) return;
 
-  // Find the lowest paragraph start that is greater than current index
-  let targetIndex = state.words.length - 1;
-  for (let i = 0; i < state.paragraphStarts.length; i++) {
-    if (state.paragraphStarts[i] > state.currentIndex) {
-      targetIndex = state.paragraphStarts[i];
-      break;
-    }
-  }
-
-  jumpToIndex(targetIndex);
+  const currentIdx = findCurrentBoundaryIndex(state.paragraphStarts);
+  const targetIdx = Math.min(state.paragraphStarts.length - 1, currentIdx + 1);
+  jumpToIndex(state.paragraphStarts[targetIdx]);
 }
 
 /**
