@@ -197,9 +197,6 @@ function updateProgress() {
 
   const progress = (state.currentIndex / state.words.length) * 100;
   progressFill.style.width = `${progress}%`;
-
-  // Also update position indicator
-  updatePositionIndicator();
 }
 
 /**
@@ -574,29 +571,6 @@ function getSavedPosition(sourceId) {
   }
 
   return null;
-}
-
-/**
- * Update the position indicator display.
- * Shows "Word X of Y" at bottom of screen.
- */
-function updatePositionIndicator() {
-  let indicator = document.getElementById('position-indicator');
-
-  if (!indicator) {
-    indicator = document.createElement('div');
-    indicator.id = 'position-indicator';
-    document.body.appendChild(indicator);
-  }
-
-  if (state.words.length === 0) {
-    indicator.style.display = 'none';
-    return;
-  }
-
-  indicator.style.display = 'block';
-  const current = state.currentIndex + 1; // 1-indexed for display
-  indicator.textContent = `Word ${current} of ${state.words.length}`;
 }
 
 /**
