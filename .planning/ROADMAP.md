@@ -8,7 +8,8 @@ Build a cross-platform RSVP reader from scratch: scaffold the Electron app, impl
 
 - ✅ [v1.0 MVP](milestones/v1.0-ROADMAP.md) — Phases 1-4 (shipped 2026-01-18)
 - ✅ [v1.1 Polish](milestones/v1.1-ROADMAP.md) — Phases 5-7 (shipped 2026-01-18)
-- ✅ **v1.2 UI Refinements** — Phases 8-9 (shipped 2026-01-18)
+- ✅ [v1.2 UI Refinements](milestones/v1.2-ROADMAP.md) — Phases 8-9 (shipped 2026-01-18)
+- 🚧 **v1.3 Window Management** — Phases 10-12 (in progress)
 
 ## Completed Milestones
 
@@ -49,6 +50,40 @@ Build a cross-platform RSVP reader from scratch: scaffold the Electron app, impl
 
 </details>
 
+## 🚧 v1.3 Window Management (In Progress)
+
+**Milestone Goal:** Enhanced window management with position persistence, multi-monitor support, and user preferences for window behavior.
+
+### Phase 10: Window Positioning
+
+**Goal**: Save and restore window position and size across sessions
+**Depends on**: Phase 9
+**Research**: Unlikely (Electron BrowserWindow APIs)
+**Plans**: TBD
+
+Plans:
+- [ ] 10-01: TBD (run /gsd:plan-phase 10 to break down)
+
+### Phase 11: Multi-Monitor Support
+
+**Goal**: Detect and handle multi-monitor setups with proper window placement
+**Depends on**: Phase 10
+**Research**: Unlikely (Electron screen API)
+**Plans**: TBD
+
+Plans:
+- [ ] 11-01: TBD
+
+### Phase 12: Window Preferences
+
+**Goal**: Add preferences UI for customizing window behavior settings
+**Depends on**: Phase 11
+**Research**: Unlikely (internal UI patterns)
+**Plans**: TBD
+
+Plans:
+- [ ] 12-01: TBD
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -62,3 +97,6 @@ Build a cross-platform RSVP reader from scratch: scaffold the Electron app, impl
 | 7. Visual Polish | v1.1 | 1/1 | Complete | 2026-01-18 |
 | 8. Frameless Window | v1.2 | 1/1 | Complete | 2026-01-18 |
 | 9. Focus Overlay | v1.2 | 1/1 | Complete | 2026-01-18 |
+| 10. Window Positioning | v1.3 | 0/? | Not started | - |
+| 11. Multi-Monitor Support | v1.3 | 0/? | Not started | - |
+| 12. Window Preferences | v1.3 | 0/? | Not started | - |
