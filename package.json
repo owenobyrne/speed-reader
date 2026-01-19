@@ -11,6 +11,7 @@
   "build": {
     "appId": "com.speedread.app",
     "productName": "Speed Reader",
+    "publisher": "Speed Reader",
     "copyright": "Copyright © 2026",
     "compression": "maximum",
     "files": [
