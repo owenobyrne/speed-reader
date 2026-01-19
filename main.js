@@ -20,6 +20,7 @@ let JSDOM, Readability, pdfParse, mammoth;
 /**
  * Create a fullscreen dark backdrop window for focus mode.
  * Non-focusable so clicks pass through to main window.
+ * Optimized for ultrawide monitors.
  */
 function createBackdropWindow() {
   const primaryDisplay = screen.getPrimaryDisplay();
@@ -31,51 +32,35 @@ function createBackdropWindow() {
     x: 0,
     y: 0,
     frame: false,
-    transparent: true,
+    transparent: false,
     skipTaskbar: true,
     focusable: false,
     alwaysOnTop: true,
-    type: 'desktop', // Below normal windows but covers desktop
-    show: false,
+    type: 'desktop',
+    show: true, // Always shown but start fully transparent
+    backgroundColor: '#000000',
+    opacity: 0, // Start invisible
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true
     }
   });
 
-  // Load a simple translucent black page
-  backdropWindow.loadURL(`data:text/html,<html><body style="margin:0;background:rgba(0,0,0,0.85);"></body></html>`);
+  // No HTML loading needed - just use backgroundColor
 
   // Use fullscreen for complete coverage
   backdropWindow.setFullScreen(true);
   backdropWindow.setAlwaysOnTop(true, 'normal');
 
-  // Wait for window to be ready before showing (prevents white flash)
-  backdropWindow.once('ready-to-show', () => {
-    if (backdropWindow && !backdropWindow.isDestroyed()) {
-      backdropWindow.show();
-    }
-  });
-
-  // Ensure main window stays above backdrop
-  if (mainWindow) {
-    mainWindow.setAlwaysOnTop(true, 'floating');
-    mainWindow.focus();
-  }
-
   backdropWindow.on('closed', () => {
     backdropWindow = null;
-    // Reset main window z-order when backdrop closes
-    if (mainWindow && !mainWindow.isDestroyed()) {
-      mainWindow.setAlwaysOnTop(false);
-    }
   });
 }
 
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
-    height: 600,
+    height: 150,
     frame: false,
     titleBarStyle: 'hidden',
     trafficLightPosition: { x: -100, y: -100 },
@@ -91,7 +76,7 @@ function createWindow() {
   // Clean up backdrop when main window closes
   mainWindow.on('closed', () => {
     if (backdropWindow && !backdropWindow.isDestroyed()) {
-      backdropWindow.close();
+      backdropWindow.destroy();
     }
     mainWindow = null;
   });
@@ -144,18 +129,27 @@ ipcMain.handle('close-window', (event) => {
 // Focus overlay toggle
 ipcMain.handle('toggle-focus-overlay', (event) => {
   if (backdropWindow && !backdropWindow.isDestroyed()) {
-    // Backdrop exists - close it
-    backdropWindow.close();
-    backdropWindow = null;
-    // Reset main window z-order
-    if (mainWindow && !mainWindow.isDestroyed()) {
-      mainWindow.setAlwaysOnTop(false);
+    const currentOpacity = backdropWindow.getOpacity();
+    if (currentOpacity > 0) {
+      // Backdrop is visible - fade out
+      backdropWindow.setOpacity(0);
+      return false; // Overlay is now off
+    } else {
+      // Backdrop is hidden - fade in
+      if (mainWindow) {
+        mainWindow.focus();
+      }
+      backdropWindow.setOpacity(0.85);
+      return true; // Overlay is now on
     }
-    return false; // Overlay is now off
   } else {
-    // No backdrop - create it
+    // Backdrop doesn't exist - create it
     createBackdropWindow();
-    return true; // Overlay is now on
+    if (mainWindow) {
+      mainWindow.focus();
+    }
+    backdropWindow.setOpacity(0.85);
+    return true;
   }
 });
 
@@ -163,19 +157,18 @@ ipcMain.handle('toggle-focus-overlay', (event) => {
 ipcMain.handle('show-focus-overlay', (event) => {
   if (!backdropWindow || backdropWindow.isDestroyed()) {
     createBackdropWindow();
-    return true;
   }
-  return true; // Already on
+  if (mainWindow) {
+    mainWindow.focus();
+  }
+  backdropWindow.setOpacity(0.85);
+  return true;
 });
 
 // Hide focus overlay
 ipcMain.handle('hide-focus-overlay', (event) => {
   if (backdropWindow && !backdropWindow.isDestroyed()) {
-    backdropWindow.close();
-    backdropWindow = null;
-    if (mainWindow && !mainWindow.isDestroyed()) {
-      mainWindow.setAlwaysOnTop(false);
-    }
+    backdropWindow.setOpacity(0);
   }
   return false;
 });
@@ -203,6 +196,12 @@ ipcMain.handle('fetch-url', async (event, url) => {
 
 app.whenReady().then(() => {
   createWindow();
+  createBackdropWindow(); // Pre-create backdrop for instant toggling
+
+  // Set main window above backdrop from the start
+  if (mainWindow) {
+    mainWindow.setAlwaysOnTop(true, 'floating');
+  }
 
   app.on('activate', () => {
     // macOS: re-create window when dock icon clicked and no windows open
