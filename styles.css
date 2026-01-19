@@ -45,66 +45,98 @@
   box-sizing: border-box;
 }
 
-/* Title bar for frameless window */
+/* Title bar for frameless window - top drag area with close button */
 #title-bar {
-  height: 32px;
+  height: 20px;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   width: 100%;
-  display: flex;
-  justify-content: flex-end;
   z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .title-bar-drag {
   flex: 1;
+  height: 100%;
   -webkit-app-region: drag;
 }
 
-.window-controls {
-  display: flex;
-  -webkit-app-region: no-drag;
-}
-
-.window-btn {
-  width: 32px;
-  height: 32px;
+/* Close button - top right corner */
+.close-btn-top {
+  width: 24px;
+  height: 20px;
   border: none;
   background: transparent;
-  color: #fff;
+  color: rgba(255, 255, 255, 0.4);
   font-size: 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  -webkit-app-region: no-drag;
+  transition: all 0.2s ease;
+  margin-right: 6px;
 }
 
-.window-btn:hover {
+.close-btn-top:hover {
+  color: #fff;
   background: rgba(255, 255, 255, 0.1);
-}
-
-#close-btn:hover {
-  background: #e81123;
+  border-radius: 3px;
 }
 
 body {
   background-color: #000;
   font-family: 'Times New Roman', Times, serif;
+  height: 100vh;
+  padding-top: 20px;
+  overflow: hidden;
+  -webkit-app-region: drag;
+}
+
+/* App container - horizontal layout with icon */
+#app-container {
+  display: flex;
+  height: calc(100vh - 20px);
+  width: 100%;
+  align-items: center;
+  gap: 16px;
+  padding-left: 24px;
+  padding-bottom: 30px;
+  -webkit-app-region: drag;
+}
+
+/* Logo display - matches word display styling */
+.logo-display {
+  font-size: 48px;
+  color: #fff;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 16px;
+  margin-right: 8px;
+}
+
+/* Main area - flexible width stretches across */
+#main-area {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  padding-top: 32px;
-  overflow: hidden;
+  min-width: 0;
+  padding: 0 36px 0 20px;
 }
 
 .rsvp-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 60vw;
+  width: 100%;
+  max-width: 100%;
   gap: 20px;
 }
 
@@ -130,6 +162,7 @@ body {
 
 .guide-line.bottom {
   height: 2px;
+  position: relative;
 }
 
 .guide-line.bottom .tick {
@@ -226,12 +259,13 @@ body {
 /* Drop zone styles */
 #drop-zone {
   width: 100%;
-  height: calc(100vh - 32px);
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
+  -webkit-app-region: no-drag;
 }
 
 #drop-zone.dragover {
@@ -239,17 +273,6 @@ body {
   outline-offset: -10px;
 }
 
-.drop-instructions {
-  position: absolute;
-  bottom: 40px;
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
-#drop-zone.playing .drop-instructions {
-  display: none;
-}
 
 /* Speed/size indicator */
 #speed-indicator {
@@ -277,6 +300,38 @@ body {
   color: rgba(255, 255, 255, 0.3);
   font-size: 12px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Info display - left side under bottom guide */
+#info-display {
+  position: absolute;
+  left: 0;
+  bottom: -20px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.info-text {
+  opacity: 1;
+}
+
+/* WPM display - right side under bottom guide */
+#wpm-display {
+  position: absolute;
+  right: 0;
+  bottom: -20px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wpm-label {
+  font-size: 10px;
+  opacity: 1;
 }
 
 /* Loading indicator */
