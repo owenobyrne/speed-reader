@@ -129,8 +129,8 @@ ipcMain.handle('toggle-focus-overlay', (event) => {
   if (backdropWindow && !backdropWindow.isDestroyed()) {
     if (backdropWindow.isVisible()) {
       // Backdrop is visible - hide it completely
-      backdropWindow.setAlwaysOnTop(false);
       backdropWindow.hide();
+      backdropWindow.setAlwaysOnTop(false);
       // Reset main window z-order to normal
       if (mainWindow && !mainWindow.isDestroyed()) {
         mainWindow.setAlwaysOnTop(false);
@@ -138,28 +138,30 @@ ipcMain.handle('toggle-focus-overlay', (event) => {
       return false; // Overlay is now off
     } else {
       // Backdrop is hidden - show it
-      // Set z-order: backdrop at 'normal', main at 'floating'
-      backdropWindow.setAlwaysOnTop(true, 'normal');
       backdropWindow.setOpacity(0.85);
+      backdropWindow.setAlwaysOnTop(true, 'normal');
       backdropWindow.show();
-      // Elevate main window above backdrop
+      // Force main window to front after backdrop is shown
       if (mainWindow && !mainWindow.isDestroyed()) {
         mainWindow.setAlwaysOnTop(true, 'floating');
-        mainWindow.focus();
+        mainWindow.showInactive(); // Show without stealing focus, then...
+        mainWindow.focus(); // ...focus it
+        mainWindow.moveTop(); // Explicitly move to top of window stack
       }
       return true; // Overlay is now on
     }
   } else {
     // Backdrop doesn't exist - create it
     createBackdropWindow();
-    // Set z-order: backdrop at 'normal', main at 'floating'
-    backdropWindow.setAlwaysOnTop(true, 'normal');
     backdropWindow.setOpacity(0.85);
+    backdropWindow.setAlwaysOnTop(true, 'normal');
     backdropWindow.show();
-    // Elevate main window above backdrop
+    // Force main window to front after backdrop is shown
     if (mainWindow && !mainWindow.isDestroyed()) {
       mainWindow.setAlwaysOnTop(true, 'floating');
+      mainWindow.showInactive();
       mainWindow.focus();
+      mainWindow.moveTop();
     }
     return true;
   }
@@ -170,14 +172,15 @@ ipcMain.handle('show-focus-overlay', (event) => {
   if (!backdropWindow || backdropWindow.isDestroyed()) {
     createBackdropWindow();
   }
-  // Set z-order: backdrop at 'normal', main at 'floating'
-  backdropWindow.setAlwaysOnTop(true, 'normal');
   backdropWindow.setOpacity(0.85);
+  backdropWindow.setAlwaysOnTop(true, 'normal');
   backdropWindow.show();
-  // Elevate main window above backdrop
+  // Force main window to front after backdrop is shown
   if (mainWindow && !mainWindow.isDestroyed()) {
     mainWindow.setAlwaysOnTop(true, 'floating');
+    mainWindow.showInactive();
     mainWindow.focus();
+    mainWindow.moveTop();
   }
   return true;
 });
@@ -185,8 +188,8 @@ ipcMain.handle('show-focus-overlay', (event) => {
 // Hide focus overlay
 ipcMain.handle('hide-focus-overlay', (event) => {
   if (backdropWindow && !backdropWindow.isDestroyed()) {
-    backdropWindow.setAlwaysOnTop(false);
     backdropWindow.hide();
+    backdropWindow.setAlwaysOnTop(false);
   }
   // Reset main window z-order to normal
   if (mainWindow && !mainWindow.isDestroyed()) {
