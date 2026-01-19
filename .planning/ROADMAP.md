@@ -9,7 +9,7 @@ Build a cross-platform RSVP reader from scratch: scaffold the Electron app, impl
 - ✅ [v1.0 MVP](milestones/v1.0-ROADMAP.md) — Phases 1-4 (shipped 2026-01-18)
 - ✅ [v1.1 Polish](milestones/v1.1-ROADMAP.md) — Phases 5-7 (shipped 2026-01-18)
 - ✅ [v1.2 UI Refinements](milestones/v1.2-ROADMAP.md) — Phases 8-9 (shipped 2026-01-18)
-- 🚧 **v1.3 Window Management** — Phases 10-11 (in progress)
+- 🚧 **v1.3 Windows Distribution** — Phases 10-12 (in progress)
 
 ## Completed Milestones
 
@@ -50,29 +50,40 @@ Build a cross-platform RSVP reader from scratch: scaffold the Electron app, impl
 
 </details>
 
-## 🚧 v1.3 Window Management (In Progress)
+## 🚧 v1.3 Windows Distribution (In Progress)
 
-**Milestone Goal:** Enhanced window management with multi-monitor support and user preferences for window behavior.
+**Milestone Goal:** Package Speed Reader as a distributable Windows application with installer, icons, and proper metadata.
 
-### Phase 10: Multi-Monitor Support
+### Phase 10: Build Configuration
 
-**Goal**: Detect and handle multi-monitor setups with proper window placement
+**Goal**: Set up electron-builder for Windows packaging with app metadata
 **Depends on**: Phase 9
-**Research**: Unlikely (Electron screen API)
+**Research**: Likely (electron-builder configuration, build targets)
+**Research topics**: electron-builder Windows config, NSIS options, build scripts
 **Plans**: TBD
 
 Plans:
 - [ ] 10-01: TBD (run /gsd:plan-phase 10 to break down)
 
-### Phase 11: Window Preferences
+### Phase 11: Windows Installer
 
-**Goal**: Add preferences UI for customizing window behavior settings
+**Goal**: Create NSIS installer with app icon, start menu shortcuts, and uninstaller
 **Depends on**: Phase 10
-**Research**: Unlikely (internal UI patterns)
+**Research**: Unlikely (standard NSIS patterns)
 **Plans**: TBD
 
 Plans:
 - [ ] 11-01: TBD
+
+### Phase 12: Distribution Package
+
+**Goal**: Generate final distributable package with proper versioning and metadata
+**Depends on**: Phase 11
+**Research**: Unlikely (electron-builder build command)
+**Plans**: TBD
+
+Plans:
+- [ ] 12-01: TBD
 
 ## Progress
 
@@ -87,5 +98,6 @@ Plans:
 | 7. Visual Polish | v1.1 | 1/1 | Complete | 2026-01-18 |
 | 8. Frameless Window | v1.2 | 1/1 | Complete | 2026-01-18 |
 | 9. Focus Overlay | v1.2 | 1/1 | Complete | 2026-01-18 |
-| 10. Multi-Monitor Support | v1.3 | 0/? | Not started | - |
-| 11. Window Preferences | v1.3 | 0/? | Not started | - |
+| 10. Build Configuration | v1.3 | 0/? | Not started | - |
+| 11. Windows Installer | v1.3 | 0/? | Not started | - |
+| 12. Distribution Package | v1.3 | 0/? | Not started | - |
