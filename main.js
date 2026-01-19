@@ -71,6 +71,17 @@ function createWindow() {
 
   mainWindow.loadFile('index.html');
 
+  // Ensure main window is always on top on startup (in case backdrop is stuck)
+  mainWindow.once('ready-to-show', () => {
+    // Force hide backdrop if it exists and ensure main window is accessible
+    if (backdropWindow && !backdropWindow.isDestroyed()) {
+      backdropWindow.hide();
+      backdropWindow.setAlwaysOnTop(false);
+    }
+    mainWindow.setAlwaysOnTop(false);
+    mainWindow.focus();
+  });
+
   // Clean up backdrop when main window closes
   mainWindow.on('closed', () => {
     if (backdropWindow && !backdropWindow.isDestroyed()) {
@@ -221,12 +232,7 @@ ipcMain.handle('fetch-url', async (event, url) => {
 
 app.whenReady().then(() => {
   createWindow();
-  createBackdropWindow(); // Pre-create backdrop for instant toggling
-
-  // Set main window above backdrop from the start
-  if (mainWindow) {
-    mainWindow.setAlwaysOnTop(true, 'floating');
-  }
+  createBackdropWindow(); // Pre-create backdrop for instant toggling (starts hidden)
 
   app.on('activate', () => {
     // macOS: re-create window when dock icon clicked and no windows open
