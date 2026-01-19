@@ -5,7 +5,26 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "build": "electron-builder",
+    "generate-icons": "node generate-icons.js"
+  },
+  "build": {
+    "appId": "com.speedread.app",
+    "productName": "Speed Reader",
+    "mac": {
+      "icon": "build/icons/icon.icns",
+      "category": "public.app-category.productivity"
+    },
+    "win": {
+      "icon": "build/icons/icon.ico",
+      "target": [
+        "nsis"
+      ]
+    },
+    "linux": {
+      "icon": "build/icons",
+      "category": "Utility"
+    }
   },
   "keywords": [
     "rsvp",
@@ -15,7 +34,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^40.0.0"
+    "electron": "^40.0.0",
+    "electron-builder": "^26.4.0",
+    "electron-icon-builder": "^2.0.1",
+    "sharp": "^0.34.5"
   },
   "dependencies": {
     "@mozilla/readability": "^0.6.0",
