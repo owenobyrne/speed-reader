@@ -11,6 +11,14 @@
   "build": {
     "appId": "com.speedread.app",
     "productName": "Speed Reader",
+    "copyright": "Copyright © 2026",
+    "compression": "maximum",
+    "files": [
+      "**/*",
+      "!node_modules/mammoth/test",
+      "!node_modules/pdf-parse/test",
+      "!node_modules/@mozilla/readability/test"
+    ],
     "mac": {
       "icon": "build/icons/icon.icns",
       "category": "public.app-category.productivity"
@@ -19,7 +27,8 @@
       "icon": "build/icons/icon.ico",
       "target": [
         "nsis"
-      ]
+      ],
+      "copyright": "Copyright © 2026"
     },
     "linux": {
       "icon": "build/icons",
