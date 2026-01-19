@@ -37,9 +37,8 @@ function createBackdropWindow() {
     focusable: false,
     alwaysOnTop: true,
     type: 'desktop',
-    show: true, // Always shown but start fully transparent
+    show: false, // Start hidden - will be shown when overlay is toggled on
     backgroundColor: '#000000',
-    opacity: 0, // Start invisible
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true
@@ -129,26 +128,27 @@ ipcMain.handle('close-window', (event) => {
 // Focus overlay toggle
 ipcMain.handle('toggle-focus-overlay', (event) => {
   if (backdropWindow && !backdropWindow.isDestroyed()) {
-    const currentOpacity = backdropWindow.getOpacity();
-    if (currentOpacity > 0) {
-      // Backdrop is visible - fade out
-      backdropWindow.setOpacity(0);
+    if (backdropWindow.isVisible()) {
+      // Backdrop is visible - hide it completely
+      backdropWindow.hide();
       return false; // Overlay is now off
     } else {
-      // Backdrop is hidden - fade in
+      // Backdrop is hidden - show it
+      backdropWindow.setOpacity(0.85);
+      backdropWindow.show();
       if (mainWindow) {
         mainWindow.focus();
       }
-      backdropWindow.setOpacity(0.85);
       return true; // Overlay is now on
     }
   } else {
     // Backdrop doesn't exist - create it
     createBackdropWindow();
+    backdropWindow.setOpacity(0.85);
+    backdropWindow.show();
     if (mainWindow) {
       mainWindow.focus();
     }
-    backdropWindow.setOpacity(0.85);
     return true;
   }
 });
@@ -158,17 +158,18 @@ ipcMain.handle('show-focus-overlay', (event) => {
   if (!backdropWindow || backdropWindow.isDestroyed()) {
     createBackdropWindow();
   }
+  backdropWindow.setOpacity(0.85);
+  backdropWindow.show();
   if (mainWindow) {
     mainWindow.focus();
   }
-  backdropWindow.setOpacity(0.85);
   return true;
 });
 
 // Hide focus overlay
 ipcMain.handle('hide-focus-overlay', (event) => {
   if (backdropWindow && !backdropWindow.isDestroyed()) {
-    backdropWindow.setOpacity(0);
+    backdropWindow.hide();
   }
   return false;
 });
