@@ -792,8 +792,7 @@ async function handleDroppedFile(file) {
 
 // Initialize on load
 document.addEventListener('DOMContentLoaded', () => {
-  // Window control buttons
-  document.getElementById('minimize-btn').addEventListener('click', () => window.windowAPI.minimizeWindow());
+  // Window control button
   document.getElementById('close-btn').addEventListener('click', () => window.windowAPI.closeWindow());
 
   const dropZone = document.getElementById('drop-zone');
