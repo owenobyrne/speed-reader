@@ -35,7 +35,7 @@ function createBackdropWindow() {
     transparent: false,
     skipTaskbar: true,
     focusable: false,
-    alwaysOnTop: true,
+    alwaysOnTop: false, // Will be set to true when shown
     type: 'desktop',
     show: false, // Start hidden - will be shown when overlay is toggled on
     backgroundColor: '#000000',
@@ -49,7 +49,6 @@ function createBackdropWindow() {
 
   // Use fullscreen for complete coverage
   backdropWindow.setFullScreen(true);
-  backdropWindow.setAlwaysOnTop(true, 'normal');
 
   backdropWindow.on('closed', () => {
     backdropWindow = null;
@@ -130,6 +129,7 @@ ipcMain.handle('toggle-focus-overlay', (event) => {
   if (backdropWindow && !backdropWindow.isDestroyed()) {
     if (backdropWindow.isVisible()) {
       // Backdrop is visible - hide it completely
+      backdropWindow.setAlwaysOnTop(false);
       backdropWindow.hide();
       // Reset main window z-order to normal
       if (mainWindow && !mainWindow.isDestroyed()) {
@@ -138,6 +138,8 @@ ipcMain.handle('toggle-focus-overlay', (event) => {
       return false; // Overlay is now off
     } else {
       // Backdrop is hidden - show it
+      // Set z-order: backdrop at 'normal', main at 'floating'
+      backdropWindow.setAlwaysOnTop(true, 'normal');
       backdropWindow.setOpacity(0.85);
       backdropWindow.show();
       // Elevate main window above backdrop
@@ -150,6 +152,8 @@ ipcMain.handle('toggle-focus-overlay', (event) => {
   } else {
     // Backdrop doesn't exist - create it
     createBackdropWindow();
+    // Set z-order: backdrop at 'normal', main at 'floating'
+    backdropWindow.setAlwaysOnTop(true, 'normal');
     backdropWindow.setOpacity(0.85);
     backdropWindow.show();
     // Elevate main window above backdrop
@@ -166,6 +170,8 @@ ipcMain.handle('show-focus-overlay', (event) => {
   if (!backdropWindow || backdropWindow.isDestroyed()) {
     createBackdropWindow();
   }
+  // Set z-order: backdrop at 'normal', main at 'floating'
+  backdropWindow.setAlwaysOnTop(true, 'normal');
   backdropWindow.setOpacity(0.85);
   backdropWindow.show();
   // Elevate main window above backdrop
@@ -179,6 +185,7 @@ ipcMain.handle('show-focus-overlay', (event) => {
 // Hide focus overlay
 ipcMain.handle('hide-focus-overlay', (event) => {
   if (backdropWindow && !backdropWindow.isDestroyed()) {
+    backdropWindow.setAlwaysOnTop(false);
     backdropWindow.hide();
   }
   // Reset main window z-order to normal
