@@ -27,8 +27,7 @@
       "icon": "build/icons/icon.ico",
       "target": [
         "nsis"
-      ],
-      "copyright": "Copyright © 2026"
+      ]
     },
     "linux": {
       "icon": "build/icons",
