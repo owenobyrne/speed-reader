@@ -27,7 +27,18 @@
       "icon": "build/icons/icon.ico",
       "target": [
         "nsis"
-      ]
+      ],
+      "nsis": {
+        "oneClick": false,
+        "allowToChangeInstallationDirectory": true,
+        "createDesktopShortcut": true,
+        "createStartMenuShortcut": true,
+        "shortcutName": "Speed Reader",
+        "installerIcon": "build/icons/icon.ico",
+        "uninstallerIcon": "build/icons/icon.ico",
+        "license": "LICENSE",
+        "perMachine": false
+      }
     },
     "linux": {
       "icon": "build/icons",
