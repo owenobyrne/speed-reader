@@ -372,7 +372,8 @@ function jumpForwardParagraph() {
  */
 function setSpeed(wpm) {
   state.wpm = Math.max(100, Math.min(1000, wpm));
-  showIndicator(`${state.wpm} WPM`);
+  updateWPMDisplay();
+  updateInfoText(`Speed: ${state.wpm} WPM`);
 
   // Save WPM preference to localStorage
   try {
@@ -404,7 +405,7 @@ function setFontSize(size) {
 
   // Scale container height proportionally (1.25x font size)
   display.style.height = `${state.fontSize * 1.25}px`;
-  showIndicator(`${state.fontSize}px`);
+  updateInfoText(`Size: ${state.fontSize}px`);
 
   // Save font size preference to localStorage
   try {
@@ -420,7 +421,7 @@ function setFontSize(size) {
 function cycleTimingMode() {
   const modeNames = ['Pure WPM', 'Punctuation', 'Length+Punct'];
   state.timingMode = (state.timingMode + 1) % 3;
-  showIndicator(modeNames[state.timingMode]);
+  updateInfoText(`Timing: ${modeNames[state.timingMode]}`);
 }
 
 /**
@@ -444,7 +445,7 @@ function setFont(index) {
   // Apply vertical offset to align baselines (derived from font metrics)
   display.style.transform = font.offset ? `translateY(${font.offset}em)` : 'none';
 
-  showIndicator(font.name);
+  updateInfoText(`Font: ${font.name}`);
 
   // Save preference to localStorage
   try {
@@ -467,7 +468,7 @@ function cycleFont() {
  */
 async function toggleFocusOverlay() {
   const isOn = await window.windowAPI.toggleFocusOverlay();
-  showIndicator(isOn ? 'Focus Mode' : 'Focus Mode Off');
+  updateInfoText(isOn ? 'Focus Mode On' : 'Focus Mode Off');
 }
 
 /**
@@ -490,7 +491,7 @@ async function showFocusOverlay() {
  */
 function toggleContext() {
   state.showContext = !state.showContext;
-  showIndicator(state.showContext ? 'Context On' : 'Context Off');
+  updateInfoText(state.showContext ? 'Context On' : 'Context Off');
 
   // Save preference to localStorage
   try {
@@ -509,27 +510,25 @@ function toggleContext() {
  * Show a brief indicator message at bottom of screen.
  * @param {string} message - Message to display
  */
-function showIndicator(message) {
-  let indicator = document.getElementById('speed-indicator');
-
-  if (!indicator) {
-    indicator = document.createElement('div');
-    indicator.id = 'speed-indicator';
-    document.body.appendChild(indicator);
+/**
+ * Update info text (left side of bottom guideline).
+ * @param {string} message - Info message to display
+ */
+function updateInfoText(message) {
+  const infoText = document.getElementById('info-text');
+  if (infoText) {
+    infoText.textContent = message;
   }
+}
 
-  indicator.textContent = message;
-  indicator.classList.add('visible');
-
-  // Clear any existing timeout
-  if (indicator.timeoutId) {
-    clearTimeout(indicator.timeoutId);
+/**
+ * Update WPM display (right side of bottom guideline).
+ */
+function updateWPMDisplay() {
+  const wpmValue = document.getElementById('wpm-value');
+  if (wpmValue) {
+    wpmValue.textContent = state.wpm;
   }
-
-  // Fade out after 1 second
-  indicator.timeoutId = setTimeout(() => {
-    indicator.classList.remove('visible');
-  }, 1000);
 }
 
 /**
@@ -869,6 +868,9 @@ document.addEventListener('DOMContentLoaded', () => {
   } catch (e) {
     console.warn('Could not restore context preference:', e);
   }
+
+  // Initialize WPM display with current value
+  updateWPMDisplay();
 
   // Keyboard controls
   document.addEventListener('keydown', (e) => {
