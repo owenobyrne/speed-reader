@@ -65,15 +65,15 @@ Build a cross-platform RSVP reader from scratch: scaffold the Electron app, impl
 Plans:
 - [x] 10-01: Build Configuration Setup (complete 2026-01-19)
 
-### Phase 11: Windows Installer
+### Phase 11: Windows Installer ✅
 
 **Goal**: Create NSIS installer with app icon, start menu shortcuts, and uninstaller
 **Depends on**: Phase 10
 **Research**: Unlikely (standard NSIS patterns)
-**Plans**: TBD
+**Plans**: 1/1 complete
 
 Plans:
-- [ ] 11-01: TBD
+- [x] 11-01: NSIS Installer Configuration (complete 2026-01-19)
 
 ### Phase 12: Distribution Package
 
@@ -99,5 +99,5 @@ Plans:
 | 8. Frameless Window | v1.2 | 1/1 | Complete | 2026-01-18 |
 | 9. Focus Overlay | v1.2 | 1/1 | Complete | 2026-01-18 |
 | 10. Build Configuration | v1.3 | 1/1 | Complete | 2026-01-19 |
-| 11. Windows Installer | v1.3 | 0/? | Not started | - |
+| 11. Windows Installer | v1.3 | 1/1 | Complete | 2026-01-19 |
 | 12. Distribution Package | v1.3 | 0/? | Not started | - |
