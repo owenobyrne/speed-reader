@@ -131,12 +131,18 @@ ipcMain.handle('toggle-focus-overlay', (event) => {
     if (backdropWindow.isVisible()) {
       // Backdrop is visible - hide it completely
       backdropWindow.hide();
+      // Reset main window z-order to normal
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.setAlwaysOnTop(false);
+      }
       return false; // Overlay is now off
     } else {
       // Backdrop is hidden - show it
       backdropWindow.setOpacity(0.85);
       backdropWindow.show();
-      if (mainWindow) {
+      // Elevate main window above backdrop
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.setAlwaysOnTop(true, 'floating');
         mainWindow.focus();
       }
       return true; // Overlay is now on
@@ -146,7 +152,9 @@ ipcMain.handle('toggle-focus-overlay', (event) => {
     createBackdropWindow();
     backdropWindow.setOpacity(0.85);
     backdropWindow.show();
-    if (mainWindow) {
+    // Elevate main window above backdrop
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.setAlwaysOnTop(true, 'floating');
       mainWindow.focus();
     }
     return true;
@@ -160,7 +168,9 @@ ipcMain.handle('show-focus-overlay', (event) => {
   }
   backdropWindow.setOpacity(0.85);
   backdropWindow.show();
-  if (mainWindow) {
+  // Elevate main window above backdrop
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.setAlwaysOnTop(true, 'floating');
     mainWindow.focus();
   }
   return true;
@@ -170,6 +180,10 @@ ipcMain.handle('show-focus-overlay', (event) => {
 ipcMain.handle('hide-focus-overlay', (event) => {
   if (backdropWindow && !backdropWindow.isDestroyed()) {
     backdropWindow.hide();
+  }
+  // Reset main window z-order to normal
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.setAlwaysOnTop(false);
   }
   return false;
 });
