@@ -32,7 +32,11 @@ const state = {
   currentFontIndex: 0,
   // Context words: show previous/next words dimly for parafoveal preview
   showContext: true,
-  contextWordCount: 2  // Number of words to show on each side
+  contextWordCount: 2,      // Number of words to show on each side
+  // WPS tracking
+  wpsStartTime: null,       // When reading started (for WPS calculation)
+  wpsStartIndex: 0,         // Word index when reading started
+  currentWPS: 0             // Current words per second
 };
 
 // Test text
@@ -244,6 +248,10 @@ function play() {
 
   state.isPlaying = true;
 
+  // Initialize WPS tracking
+  state.wpsStartTime = Date.now();
+  state.wpsStartIndex = state.currentIndex;
+
   // Show first word immediately - advanceWord will chain subsequent calls
   advanceWord();
 }
@@ -372,6 +380,7 @@ function jumpForwardParagraph() {
  */
 function setSpeed(wpm) {
   state.wpm = Math.max(100, Math.min(1000, wpm));
+  updateWPMDisplay();
   showIndicator(`${state.wpm} WPM`);
 
   // Save WPM preference to localStorage
@@ -404,6 +413,13 @@ function setFontSize(size) {
 
   // Scale container height proportionally (1.25x font size)
   display.style.height = `${state.fontSize * 1.25}px`;
+
+  // Update logo display to match
+  const logoDisplay = document.getElementById('logo-display');
+  if (logoDisplay) {
+    logoDisplay.style.fontSize = `${scaledSize}px`;
+  }
+
   showIndicator(`${state.fontSize}px`);
 
   // Save font size preference to localStorage
@@ -443,6 +459,14 @@ function setFont(index) {
 
   // Apply vertical offset to align baselines (derived from font metrics)
   display.style.transform = font.offset ? `translateY(${font.offset}em)` : 'none';
+
+  // Update logo display to match
+  const logoDisplay = document.getElementById('logo-display');
+  if (logoDisplay) {
+    logoDisplay.style.fontFamily = fontFamily;
+    logoDisplay.style.fontSize = `${scaledSize}px`;
+    logoDisplay.style.transform = font.offset ? `translateY(${font.offset}em)` : 'none';
+  }
 
   showIndicator(font.name);
 
@@ -506,30 +530,28 @@ function toggleContext() {
 }
 
 /**
- * Show a brief indicator message at bottom of screen.
+ * Show a brief indicator message in the info display.
  * @param {string} message - Message to display
  */
 function showIndicator(message) {
-  let indicator = document.getElementById('speed-indicator');
+  const infoText = document.getElementById('info-text');
+  if (!infoText) return;
 
-  if (!indicator) {
-    indicator = document.createElement('div');
-    indicator.id = 'speed-indicator';
-    document.body.appendChild(indicator);
-  }
-
-  indicator.textContent = message;
-  indicator.classList.add('visible');
+  const originalText = infoText.textContent;
+  infoText.textContent = message;
 
   // Clear any existing timeout
-  if (indicator.timeoutId) {
-    clearTimeout(indicator.timeoutId);
+  if (showIndicator.timeoutId) {
+    clearTimeout(showIndicator.timeoutId);
   }
 
-  // Fade out after 1 second
-  indicator.timeoutId = setTimeout(() => {
-    indicator.classList.remove('visible');
-  }, 1000);
+  // Restore original text after 1.5 seconds
+  showIndicator.timeoutId = setTimeout(() => {
+    // Only restore if still showing the indicator message
+    if (infoText.textContent === message) {
+      infoText.textContent = originalText;
+    }
+  }, 1500);
 }
 
 /**
@@ -578,26 +600,22 @@ function getSavedPosition(sourceId) {
 }
 
 /**
- * Update the position indicator display.
- * Shows "Word X of Y" at bottom of screen.
+ * Update the position indicator display in info text.
+ * No longer shows word count - just maintains default text.
  */
 function updatePositionIndicator() {
-  let indicator = document.getElementById('position-indicator');
+  // Position indicator no longer displayed per user request
+  // Info text remains static or shows temporary notifications
+}
 
-  if (!indicator) {
-    indicator = document.createElement('div');
-    indicator.id = 'position-indicator';
-    document.body.appendChild(indicator);
-  }
+/**
+ * Update the WPM display to show user's target WPM setting.
+ */
+function updateWPMDisplay() {
+  const wpmValueElement = document.getElementById('wpm-value');
+  if (!wpmValueElement) return;
 
-  if (state.words.length === 0) {
-    indicator.style.display = 'none';
-    return;
-  }
-
-  indicator.style.display = 'block';
-  const current = state.currentIndex + 1; // 1-indexed for display
-  indicator.textContent = `Word ${current} of ${state.words.length}`;
+  wpmValueElement.textContent = state.wpm.toString();
 }
 
 /**
@@ -731,7 +749,16 @@ async function handleURL(url) {
  * @param {File} file - Dropped file object
  */
 async function handleDroppedFile(file) {
+  // Log file details for debugging
+  console.log('handleDroppedFile - File object:', {
+    name: file.name,
+    type: file.type,
+    size: file.size,
+    lastModified: file.lastModified
+  });
+
   const filePath = window.fileAPI.getPathForFile(file);
+  console.log('handleDroppedFile - File path:', filePath);
 
   if (!filePath) {
     alert('Could not get file path. Try dragging the file directly from File Explorer.');
@@ -739,6 +766,7 @@ async function handleDroppedFile(file) {
   }
 
   const ext = await window.fileAPI.getExtension(filePath);
+  console.log('handleDroppedFile - Detected extension:', ext);
 
   // Show loading indicator (libraries may take time to load on first use)
   const filename = filePath.split(/[/\\]/).pop();
@@ -759,7 +787,12 @@ async function handleDroppedFile(file) {
         break;
       default:
         document.getElementById('word-display').innerHTML = '';
-        alert(`Unsupported file format: ${ext}\nSupported formats: .pdf, .docx, .txt`);
+        console.error('Unsupported file format:', {
+          extension: ext,
+          mimetype: file.type,
+          filename: file.name
+        });
+        alert(`Unsupported file format: ${ext}\nMIME type: ${file.type || 'unknown'}\nSupported formats: .pdf, .docx, .txt`);
         return;
     }
 
@@ -792,8 +825,7 @@ async function handleDroppedFile(file) {
 
 // Initialize on load
 document.addEventListener('DOMContentLoaded', () => {
-  // Window control buttons
-  document.getElementById('minimize-btn').addEventListener('click', () => window.windowAPI.minimizeWindow());
+  // Window control button
   document.getElementById('close-btn').addEventListener('click', () => window.windowAPI.closeWindow());
 
   const dropZone = document.getElementById('drop-zone');
@@ -842,6 +874,14 @@ document.addEventListener('DOMContentLoaded', () => {
         display.style.fontSize = `${scaledSize}px`;
         // Apply vertical offset
         display.style.transform = font.offset ? `translateY(${font.offset}em)` : 'none';
+
+        // Apply to logo display
+        const logoDisplay = document.getElementById('logo-display');
+        if (logoDisplay) {
+          logoDisplay.style.fontFamily = fontFamily;
+          logoDisplay.style.fontSize = `${scaledSize}px`;
+          logoDisplay.style.transform = font.offset ? `translateY(${font.offset}em)` : 'none';
+        }
       }
     }
   } catch (e) {
@@ -859,6 +899,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   } catch (e) {
     console.warn('Could not restore WPM preference:', e);
+  }
+
+  // Initialize WPM display
+  updateWPMDisplay();
+
+  // Initialize logo display (in case no saved font preference)
+  const logoDisplay = document.getElementById('logo-display');
+  if (logoDisplay) {
+    const font = state.fonts[state.currentFontIndex];
+    const fontFamily = `'${font.name}', serif`;
+    const scaledSize = Math.round(state.fontSize * font.scale);
+    logoDisplay.style.fontFamily = fontFamily;
+    logoDisplay.style.fontSize = `${scaledSize}px`;
+    logoDisplay.style.transform = font.offset ? `translateY(${font.offset}em)` : 'none';
   }
 
   // Restore context preference from localStorage
