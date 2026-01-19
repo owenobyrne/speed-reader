@@ -1022,7 +1022,7 @@ document.addEventListener('DOMContentLoaded', () => {
   dropZone.addEventListener('dragover', (e) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
-    console.log('dragover');
+    console.log('dragover - types:', e.dataTransfer.types, 'items:', e.dataTransfer.items?.length);
   });
 
   dropZone.addEventListener('dragleave', (e) => {
@@ -1035,10 +1035,30 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     dropZone.classList.remove('dragover');
     console.log('drop event fired');
+    console.log('dataTransfer.types:', e.dataTransfer.types);
+    console.log('dataTransfer.files.length:', e.dataTransfer.files.length);
+    console.log('dataTransfer.items:', e.dataTransfer.items);
+
+    // Log all items in dataTransfer
+    if (e.dataTransfer.items) {
+      for (let i = 0; i < e.dataTransfer.items.length; i++) {
+        const item = e.dataTransfer.items[i];
+        console.log(`Item ${i}:`, {
+          kind: item.kind,
+          type: item.type
+        });
+
+        // Try to get as file
+        if (item.kind === 'file') {
+          const file = item.getAsFile();
+          console.log(`  File object:`, file);
+        }
+      }
+    }
 
     // Check for dropped file first
     const file = e.dataTransfer.files[0];
-    console.log('Dropped file:', file);
+    console.log('Dropped file (from files[0]):', file);
     if (file) {
       await handleDroppedFile(file);
       return;
