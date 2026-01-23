@@ -9,7 +9,7 @@ Build a cross-platform RSVP reader from scratch: scaffold the Electron app, impl
 - ✅ [v1.0 MVP](milestones/v1.0-ROADMAP.md) — Phases 1-4 (shipped 2026-01-18)
 - ✅ [v1.1 Polish](milestones/v1.1-ROADMAP.md) — Phases 5-7 (shipped 2026-01-18)
 - ✅ [v1.2 UI Refinements](milestones/v1.2-ROADMAP.md) — Phases 8-9 (shipped 2026-01-18)
-- 🚧 **v1.3 Windows Distribution** — Phases 10-12 (in progress)
+- ✅ [v1.3 Windows Distribution](milestones/v1.3-ROADMAP.md) — Phases 10-12 (shipped 2026-01-23)
 
 ## Completed Milestones
 
@@ -50,40 +50,19 @@ Build a cross-platform RSVP reader from scratch: scaffold the Electron app, impl
 
 </details>
 
-## 🚧 v1.3 Windows Distribution (In Progress)
+<details>
+<summary>✅ v1.3 Windows Distribution (Phases 10-12) — SHIPPED 2026-01-23</summary>
 
 **Milestone Goal:** Package Speed Reader as a distributable Windows application with installer, icons, and proper metadata.
 
-### Phase 10: Build Configuration ✅
+- [x] **Phase 10: Build Configuration** — electron-builder with NSIS target
+- [x] **Phase 11: Windows Installer** — NSIS configuration with shortcuts
+- [x] **Phase 12: Distribution Package** — Final installer build
 
-**Goal**: Set up electron-builder for Windows packaging with app metadata
-**Depends on**: Phase 9
-**Research**: Likely (electron-builder configuration, build targets)
-**Research topics**: electron-builder Windows config, NSIS options, build scripts
-**Plans**: 1/1 complete
+**Plans completed:** 3 total
+**Deliverable:** `dist/Speed Reader Setup 1.0.0.exe` (104MB)
 
-Plans:
-- [x] 10-01: Build Configuration Setup (complete 2026-01-19)
-
-### Phase 11: Windows Installer ✅
-
-**Goal**: Create NSIS installer with app icon, start menu shortcuts, and uninstaller
-**Depends on**: Phase 10
-**Research**: Unlikely (standard NSIS patterns)
-**Plans**: 1/1 complete
-
-Plans:
-- [x] 11-01: NSIS Installer Configuration (complete 2026-01-19)
-
-### Phase 12: Distribution Package
-
-**Goal**: Generate final distributable package with proper versioning and metadata
-**Depends on**: Phase 11
-**Research**: Unlikely (electron-builder build command)
-**Plans**: TBD
-
-Plans:
-- [ ] 12-01: TBD
+</details>
 
 ## Progress
 
@@ -100,4 +79,4 @@ Plans:
 | 9. Focus Overlay | v1.2 | 1/1 | Complete | 2026-01-18 |
 | 10. Build Configuration | v1.3 | 1/1 | Complete | 2026-01-19 |
 | 11. Windows Installer | v1.3 | 1/1 | Complete | 2026-01-19 |
-| 12. Distribution Package | v1.3 | 0/? | Not started | - |
+| 12. Distribution Package | v1.3 | 1/1 | Complete | 2026-01-23 |
