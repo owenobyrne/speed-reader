@@ -29,7 +29,7 @@ The reading experience must be smooth, comfortable, and visually refined — wor
 
 ### Active
 
-(None — all v1.1 requirements validated)
+(None — all requirements through v1.3 validated)
 
 ### Out of Scope
 
@@ -39,11 +39,12 @@ The reading experience must be smooth, comfortable, and visually refined — wor
 
 ## Context
 
-**Current State (v1.1 shipped):**
+**Current State (v1.3 shipped):**
 - ~1,272 lines of JavaScript/CSS/HTML (core app files)
-- Tech stack: Electron 40, pdf-parse, mammoth.js, Readability
-- 7 phases, 9 plans completed in single day
+- Tech stack: Electron 40, pdf-parse, mammoth.js, Readability, electron-builder
+- 12 phases, 14 plans completed across 4 milestones
 - 6 bundled serif fonts (~142KB)
+- Windows installer: `dist/Speed Reader Setup 1.0.0.exe` (104MB)
 
 RSVP reading works by presenting words sequentially at a fixed point, eliminating eye movement. The "optimal recognition point" (ORP) is typically slightly left of center — highlighting this letter in red helps the brain process words faster. The tick marks on the guide lines help anchor visual focus.
 
@@ -73,6 +74,8 @@ Key UX considerations:
 | Bundle fonts locally (woff2) | Offline support, no CDN dependency | Good |
 | 50ms word transitions | Smooth without interfering with high WPM | Good |
 | Wrapper-based ORP layout | Natural baseline alignment across fonts | Good |
+| Unsigned installer | Acceptable for local/internal distribution | Good |
+| NSIS per-user install | No admin required, safer for users | Good |
 
 ---
-*Last updated: 2026-01-18 after v1.1 milestone*
+*Last updated: 2026-01-23 after v1.3 milestone*

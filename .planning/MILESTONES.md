@@ -1,5 +1,56 @@
 # Project Milestones: Speed Reader
 
+## v1.3 Windows Distribution (Shipped: 2026-01-23)
+
+**Delivered:** Production-ready Windows installer with custom install location, shortcuts, and auto-update metadata.
+
+**Phases completed:** 10-12 (3 plans total)
+
+**Key accomplishments:**
+
+- electron-builder@26.4.0 with Windows NSIS target and maximum compression
+- NSIS installer with custom install directory selection (oneClick: false)
+- Desktop and Start Menu shortcuts created during installation
+- Per-user installation (no admin privileges required)
+- Release metadata (latest.yml) with SHA512 checksums for future auto-updates
+- Delta update blockmap for efficient incremental updates
+
+**Stats:**
+
+- 15 files modified
+- 3 phases, 3 plans
+- 5 days (2026-01-19 → 2026-01-23)
+- Deliverable: `dist/Speed Reader Setup 1.0.0.exe` (104MB)
+
+**Git range:** `872b682` → `1b95a37`
+
+**What's next:** Code signing, cross-platform builds (Mac/Linux), or new features.
+
+---
+
+## v1.2 UI Refinements (Shipped: 2026-01-18)
+
+**Delivered:** Frameless window with custom title bar and fullscreen focus overlay for distraction-free reading.
+
+**Phases completed:** 8-9 (2 plans total)
+
+**Key accomplishments:**
+
+- Frameless window with custom minimize/close controls
+- Fullscreen dark backdrop toggle with 'o' key
+- Drag-to-move via custom title bar region
+
+**Stats:**
+
+- 2 phases, 2 plans
+- Built same day as v1.0/v1.1 (2026-01-18)
+
+**Git range:** `feat(08-01)` → `feat(09-01)`
+
+**What's next:** Windows distribution packaging.
+
+---
+
 ## v1.1 Polish (Shipped: 2026-01-18)
 
 **Delivered:** Enhanced reading experience with intelligent word timing, 6 font options with persistence, and smooth visual transitions.
